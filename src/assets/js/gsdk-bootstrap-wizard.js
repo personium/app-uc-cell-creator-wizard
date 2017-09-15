@@ -208,3 +208,7 @@ function debounce(func, wait, immediate) {
 		if (immediate && !timeout) func.apply(context, args);
 	};
 };
+
+function getSelectedCellType() {
+    return $("input[type='radio'][name='cell_type']:checked").val();
+};
