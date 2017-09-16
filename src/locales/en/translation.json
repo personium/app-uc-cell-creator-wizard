@@ -1,0 +1,45 @@
+{
+    "title": "Personal Cell Creator",
+    "description": "Fill in the necessary information to create a new cell.",
+    "resultDialog": {
+        "title": "Cell Creation"
+    },
+    "create_form": {
+        "description": "Fill in the necessary information to create a new cell.",
+        "cell_name": "Name of the new cell",
+        "account_name": "Name of the new admin account",
+        "password": "Create a password",
+        "confirm_password": "Confirm your password",
+        "cell_type": {
+            "description": "Please select your cell type",
+            "options": {
+                "Person": "Person",
+                "Organization": "Organization",
+                "App": "App"
+            }
+        },
+        "ok_button": "Create",
+        "validate": {
+            "warning": {
+                "less_minimum_length": "Please enter at least {{value}} character(s).",
+                "exceed_maximum_length": "Please enter {{value}} characters or less.",
+                "multibyte_not_allowed": "Multibyte characters are not allowed.",
+                "cannot_start_with_symbol": "Cannot start with symbols.",
+                "unsupported_symbols": "Please do not use unsupported symbol(s)."
+            }
+        },
+        "msg": {
+            "info": {
+                "cell_created": "Cell successfully created.",
+                "private_profile_cell_created": "$t(create_form.msg.info.cell_created) However cell's profile is private.",
+                "cellName": "Must be 128 characters or less and start with alphanumeric and the rest contains alphanumeric, underscores or hyphens",
+                "adminName": "Please do not use unsupported symbol(s).",
+                "adminPassword": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens"
+            },
+            "error": {
+                "fail_to_create_cell": "Failed to create a cell.",
+                "cell_already_exist": "Cell already exists."
+            }
+        }
+    }
+}

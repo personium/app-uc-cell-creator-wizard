@@ -1,0 +1,45 @@
+{
+    "title": "利用者払い出し",
+    "description": "利用者セルの払い出しを行います。",
+    "resultDialog": {
+        "title": "セルの作成"
+    },
+    "create_form": {
+        "description": "利用者セルの払い出しを行います。",
+        "cell_name": "作成するセル名を入力",
+        "account_name": "作成するアカウント名を入力",
+        "password": "作成するアカウントのパスワードを入力",
+        "confirm_password": "パスワードの確認入力",
+        "cell_type": {
+            "description": "Cell種別を選択してください",
+            "options": {
+                "Person": "ヒト",
+                "Organization": "組織",
+                "App": "アプリ"
+            }
+        },
+        "ok_button": "作成",
+        "validate": {
+            "warning": {
+                "less_minimum_length": "{{value}}文字以上を入力して下さい。",
+                "exceed_maximum_length": "{{value}}文字以下で入力して下さい。",
+                "multibyte_not_allowed": "全角文字は使用出来ません。",
+                "cannot_start_with_symbol": "特殊文字で始めることは出来ません。",
+                "unsupported_symbols": "特殊文字は“-”と“_”のみ使用出来ます。"
+            }
+        },
+        "msg": {
+            "info": {
+                "cell_created": "セルを作成しました。",
+                "private_profile_cell_created": "セルの作成に成功しました。プロフィールは非公開です。",
+                "cellName": "先頭英数字+半角英数字、半角アンダーバー、および半角ハイフン(128字以内)",
+                "adminName": "一部の特殊文字は使用出来ません。",
+                "adminPassword": "半角英数字、半角アンダーバー、および半角ハイフン(32字以内)"
+            },
+            "error": {
+                "fail_to_create_cell": "セル作成に失敗しました。",
+                "cell_already_exist": "既に存在します。"
+            }
+        }
+    }
+}

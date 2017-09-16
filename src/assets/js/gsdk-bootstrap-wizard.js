@@ -19,7 +19,30 @@ searchVisible = 0;
 transparent = true;
 
 $(document).ready(function(){
+    i18next
+        .use(i18nextXHRBackend)
+        .use(i18nextBrowserLanguageDetector)
+        .init({
+            fallbackLng: 'en',
+            debug: true,
+            backend: {
+                // load from i18next-gitbook repo
+                loadPath: './locales/{{lng}}/translation.json',
+                crossDomain: true
+            }
+        }, function(err, t) {
+            initJqueryI18next();
+            
+            // define your own additionalCallback for each App/screen
+            if ((typeof additionalCallback !== "undefined") && $.isFunction(additionalCallback)) {
+                additionalCallback();
+            }
 
+            updateContent();
+        });
+});
+
+additionalCallback = function() {
     /*  Activate the tooltips      */
     $('[rel="tooltip"]').tooltip();
 
@@ -152,10 +175,21 @@ $(document).ready(function(){
     });
 
     $('.set-full-height').css('height', 'auto');
+};
 
-});
+initJqueryI18next = function() {
+    // for options see
+    // https://github.com/i18next/jquery-i18next#initialize-the-plugin
+    jqueryI18next.init(i18next, $, {
+        useOptionsAttr: true
+    });
+}
 
-
+updateContent = function() {
+    // start localizing, details:
+    // https://github.com/i18next/jquery-i18next#usage-of-selector-function
+    $('[data-i18n]').localize();
+}
 
  //Function to show image before upload
 
