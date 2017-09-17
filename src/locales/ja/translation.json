@@ -3,14 +3,14 @@
     "description": "利用者セルの払い出しを行います。",
     "wizard_pane": {
         "cell_info": {
-            "title": "Cell名",
+            "title": "Cell",
             "cell_name": {
                 "label": "Cell名",
                 "placeholder": "作成するセル名を入力"
             }
         },
         "admin_account": {
-            "title": "Adminアカウント"
+            "title": "アカウント"
         }
     },
     "label": {

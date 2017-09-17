@@ -3,14 +3,14 @@
     "description": "Fill in the necessary information to create a new cell.",
     "wizard_pane": {
         "cell_info": {
-            "title": "Cell Name",
+            "title": "Cell",
             "cell_name": {
                 "label": "Cell Name",
                 "placeholder": "Name of the new cell"
             }
         },
         "admin_account": {
-            "title": "Admin Account"
+            "title": "Account"
         }
     },
     "label": {
