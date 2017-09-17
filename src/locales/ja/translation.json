@@ -1,12 +1,25 @@
 {
     "title": "利用者払い出し",
     "description": "利用者セルの払い出しを行います。",
+    "wizard_pane": {
+        "cell_info": {
+            "title": "Cell名",
+            "cell_name": {
+                "label": "Cell名",
+                "placeholder": "作成するセル名を入力"
+            }
+        },
+        "admin_account": {
+            "title": "Adminアカウント"
+        }
+    },
+    "label": {
+        "required": "(required)"
+    },
     "resultDialog": {
         "title": "セルの作成"
     },
     "create_form": {
-        "description": "利用者セルの払い出しを行います。",
-        "cell_name": "作成するセル名を入力",
         "account_name": "作成するアカウント名を入力",
         "password": "作成するアカウントのパスワードを入力",
         "confirm_password": "パスワードの確認入力",

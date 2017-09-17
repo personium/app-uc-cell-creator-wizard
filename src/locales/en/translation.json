@@ -1,12 +1,25 @@
 {
     "title": "Personal Cell Creator",
     "description": "Fill in the necessary information to create a new cell.",
+    "wizard_pane": {
+        "cell_info": {
+            "title": "Cell Name",
+            "cell_name": {
+                "label": "Cell Name",
+                "placeholder": "Name of the new cell"
+            }
+        },
+        "admin_account": {
+            "title": "Admin Account"
+        }
+    },
+    "label": {
+        "required": "(required)"
+    },
     "resultDialog": {
         "title": "Cell Creation"
     },
     "create_form": {
-        "description": "Fill in the necessary information to create a new cell.",
-        "cell_name": "Name of the new cell",
         "account_name": "Name of the new admin account",
         "password": "Create a password",
         "confirm_password": "Confirm your password",

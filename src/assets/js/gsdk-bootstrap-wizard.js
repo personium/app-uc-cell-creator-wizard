@@ -39,6 +39,10 @@ $(document).ready(function(){
             }
 
             updateContent();
+
+            // Special routine for reshowing the rendered contents (originally hidden bare HTML)
+            $('#loading_spinner').hide();
+            $('#wizardProfile').css('visibility', 'visible');
         });
 });
 
@@ -63,6 +67,9 @@ additionalCallback = function() {
 		    }
         }
 	});
+
+    // Need to tranlate the pane title first
+    $('.wizard-navigation [data-i18n]').localize();
 
     // Wizard Initialization
   	$('.wizard-card').bootstrapWizard({
@@ -125,10 +132,12 @@ additionalCallback = function() {
                 $($wizard).find('.btn-finish').hide();
             }
 
-            button_text = navigation.find('li:nth-child(' + $current + ') a').html();
+            button_text_i18next = navigation.find('li:nth-child(' + $current + ') a').attr('data-i18n');
 
             setTimeout(function(){
-                $('.moving-tab').text(button_text);
+                $('.moving-tab')
+                    .attr('data-i18n', button_text_i18next)
+                    .localize();
             }, 150);
 
             var checkbox = $('.footer-checkbox');
