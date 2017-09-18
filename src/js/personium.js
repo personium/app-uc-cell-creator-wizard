@@ -35,6 +35,7 @@ var targetRootUrl = rootUrl;
 var serviceCellUrl = [rootUrl, deployedCellName, "/"].join("");
 var createCellApiUrl = [serviceCellUrl, "__/unitService/user_cell_create"].join("");
 var defaultProfileUrl = [serviceCellUrl, "__/defaultProfile.json"].join("");
+var defaultProfile = {};
 var HomeApplication = {
     cellUrl: "https://demo.personium.io/HomeApplication/",
     disabledList: ["App"],
@@ -100,6 +101,9 @@ $(document).ready(function(){
             }
 
             updateContent();
+
+            // Initialize profile
+            initializeProfile(defaultProfileUrl);
 
             // Special routine for reshowing the rendered contents (originally hidden bare HTML)
             $('#loading_spinner').hide();
@@ -247,21 +251,24 @@ configureTarget = function() {
                 rangelength: [6, 32]
             },
             name: {
-                required: false,
+                required: true,
                 adminName: true,
                 rangelength: [1, 128]
-                
             },
             password: {
-                required: false,
+                required: true,
                 adminPassword: true,
                 rangelength: [6, 32]
             },
             confirm_password: {
-                required: false,
+                required: true,
                 equalTo: "#password",
                 adminPassword: true,
                 rangelength: [6, 32]
+            },
+            DisplayName: {
+                required: true,
+                rangelength: [1, 128]
             }
         }
     });
@@ -307,4 +314,43 @@ showErrorsCellName = function() {
 
 getSelectedCellType = function () {
     return $("input[type='radio'][name='cell_type']:checked").val();
+};
+
+initializeProfile = function(defaultProfileUrl) {
+    getProfile(defaultProfileUrl).done(function(profData) {
+        defaultProfile = _.clone(profData);
+        $('#DisplayName').val(profData.DisplayName);
+    });
+};
+
+uploadDefaultProfile = function(token, cellProfileUrl) {
+    let tempProfile = _.clone(defaultProfile);
+    let cellProfile = $.extend(
+        true,
+        tempProfile,
+        {
+            "CellType": $("#cell_type").val(),
+            "DisplayName": $('#DisplayName').val(),
+            "Description": $('#Description').val(),
+            "Image": _.isEmpty($('#ProfileImageName').val()) ? "" : $('#wizardPicturePreview').attr('src'),
+            "ProfileImageName": $('#ProfileImageName').val()
+        }
+    );
+
+    $.ajax({
+        type: "PUT",
+        url: cellProfileUrl,
+        data: JSON.stringify(cellProfile),
+        headers: {'Accept':'application/json',
+                  'Authorization':'Bearer ' + token}
+    })
+};
+
+getProfile = function(url) {
+    return $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'json',
+        headers: {'Accept':'application/json'}
+    });
 };

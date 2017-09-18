@@ -151,6 +151,7 @@ additionalCallback = function() {
 
 function readURL(input) {
     if (input.files && input.files[0]) {
+        $('#ProfileImageName').val(input.files[0].name);
         var reader = new FileReader();
 
         reader.onload = function (e) {

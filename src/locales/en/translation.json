@@ -62,6 +62,23 @@
                 }
             }
         },
+        "profile": {
+            "title": "Profile",
+            "description": "Edit Profile",
+            "DisplayName": {
+                "label": "Display Name",
+                "placeholder": "",
+                "spec": ""
+            },
+            "Description": {
+                "label": "Description",
+                "spec": ""
+            },
+            "Image": {
+                "label": "Profile Image",
+                "tooltip": "Select File"
+            }
+        },
         "buttons": {
             "previous": "Previous",
             "next": "Next",

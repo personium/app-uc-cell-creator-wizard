@@ -980,3 +980,7 @@ label small {
     min-width: 140px;
   }
 }
+
+textarea {
+  resize: none;
+}

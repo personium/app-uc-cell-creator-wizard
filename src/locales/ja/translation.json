@@ -62,6 +62,23 @@
                 }
             }
         },
+        "profile": {
+            "title": "プロフィール",
+            "description": "プロフィール編集",
+            "DisplayName": {
+                "label": "表示名",
+                "placeholder": "",
+                "spec": ""
+            },
+            "Description": {
+                "label": "説明",
+                "spec": ""
+            },
+            "Image": {
+                "label": "プロフィール画像",
+                "tooltip": "ファイル選択"
+            }
+        },
         "buttons": {
             "previous": "前へ",
             "next": "次へ",
