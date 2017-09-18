@@ -244,3 +244,40 @@ configureTarget = function() {
         }
     });
 };
+
+checkCellExist = function (tab, navigation, nextIndex) {
+    console.log("checkCellExist");
+    let cellName = $("#cell_name").val();
+    if (cellName) {
+        getCell(cellName).done(function(data, status, xhr) {
+            showErrorsCellName();
+        }).fail(function(data) {
+            navigation.find('li:has([data-toggle="tab"])' + ':eq('+nextIndex+') a').tab('show');
+        });
+    }
+};
+
+getCell = function (cellName) {
+    return $.ajax({
+        type: "GET",
+        url: targetRootUrl + cellName + "/", // Target Personium URL (can be another Personium server)
+        headers:{
+            'Accept':'application/xml'
+        }
+    });
+};
+
+/*
+ * Need to tell jQuery Validation that the field is invalid so that
+ * $validator.numberOfInvalids() can return the correct count.
+ */
+showErrorsCellName = function() {
+    $validator.invalid.cell_name = true;
+    $validator.showErrors({
+        "cell_name": i18next.t("wizard_pane.cell_info.cell_name.cell_already_exist")
+    });
+};
+
+getSelectedCellType = function () {
+    return $("input[type='radio'][name='cell_type']:checked").val();
+};

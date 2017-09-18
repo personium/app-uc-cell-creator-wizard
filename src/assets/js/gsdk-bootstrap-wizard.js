@@ -26,47 +26,54 @@ additionalCallback = function() {
     $('.wizard-navigation [data-i18n]').localize();
 
     // Wizard Initialization
-  	$('.wizard-card').bootstrapWizard({
+    $('.wizard-card').bootstrapWizard({
         'tabClass': 'nav nav-pills',
         'nextSelector': '.btn-next',
         'previousSelector': '.btn-previous',
 
-        onNext: function(tab, navigation, index) {
-        	var $valid = $('.wizard-card form').valid();
-        	if(!$valid) {
-        		$validator.focusInvalid();
-        		return false;
-        	}
+        onNext: function(tab, navigation, nextIndex) {
+            var $valid = $('.wizard-card form').valid();
+            if($valid) {
+                if (nextIndex == 1) {
+                    checkCellExist(tab, navigation, nextIndex);
+                    return false;
+                }
+            } else {
+                $validator.focusInvalid();
+                return false;
+            }
         },
 
         onInit : function(tab, navigation, index){
+            //check number of tabs and fill the entire row
+            var $total = navigation.find('li').length;
+            $width = 100/$total;
+            var $wizard = navigation.closest('.wizard-card');
 
-          //check number of tabs and fill the entire row
-          var $total = navigation.find('li').length;
-          $width = 100/$total;
-          var $wizard = navigation.closest('.wizard-card');
+            $display_width = $(document).width();
 
-          $display_width = $(document).width();
+            if($display_width < 600 && $total > 3){
+                $width = 50;
+            }
 
-          if($display_width < 600 && $total > 3){
-              $width = 50;
-          }
-
-           navigation.find('li').css('width',$width + '%');
-           $first_li = navigation.find('li:first-child a').html();
-           $moving_div = $('<div class="moving-tab">' + $first_li + '</div>');
-           $('.wizard-card .wizard-navigation').append($moving_div);
-           refreshAnimation($wizard, index);
-           $('.moving-tab').css('transition','transform 0s');
+            navigation.find('li').css('width',$width + '%');
+            $first_li = navigation.find('li:first-child a').html();
+            $moving_div = $('<div class="moving-tab">' + $first_li + '</div>');
+            $('.wizard-card .wizard-navigation').append($moving_div);
+            refreshAnimation($wizard, index);
+            $('.moving-tab').css('transition','transform 0s');
        },
 
-        onTabClick : function(tab, navigation, index){
-
+        onTabClick : function(tab, navigation, currentIndex, clickedIndex){
             var $valid = $('.wizard-card form').valid();
 
             if(!$valid){
                 return false;
             } else {
+                if (currentIndex == 0) {
+                    checkCellExist(tab, navigation, clickedIndex);
+                    return false;
+                }
                 return true;
             }
         },
@@ -111,7 +118,7 @@ additionalCallback = function() {
 
             refreshAnimation($wizard, index);
         }
-  	});
+    });
 
 
     // Prepare the preview for profile picture
@@ -180,18 +187,14 @@ function refreshAnimation($wizard, index){
 }
 
 function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		clearTimeout(timeout);
-		timeout = setTimeout(function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		}, wait);
-		if (immediate && !timeout) func.apply(context, args);
-	};
-};
-
-function getSelectedCellType() {
-    return $("input[type='radio'][name='cell_type']:checked").val();
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        }, wait);
+        if (immediate && !timeout) func.apply(context, args);
+    };
 };
