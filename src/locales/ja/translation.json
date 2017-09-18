@@ -4,13 +4,44 @@
     "wizard_pane": {
         "cell_info": {
             "title": "Cell",
+            "description": "名前を記入し、cell種別を選択してください。",
             "cell_name": {
                 "label": "Cell名",
-                "placeholder": "作成するセル名を入力"
+                "placeholder": "作成するセル名を入力",
+                "spec": "先頭英数字+半角英数字、半角アンダーバー、および半角ハイフン(128字以内)",
+                "cell_already_exist": "既に存在します。"
+            },
+            "cell_type": {
+                "label": "Cell種別",
+                "options": {
+                    "Person": "ヒト",
+                    "Organization": "組織",
+                    "App": "アプリ"
+                },
+                "tooltips": {
+                    "Person": "Data subject向けのcell",
+                    "Organization": "Data consumer/provider向けのcell",
+                    "App": "Personiumアプリ向けのcell"
+                }
             }
         },
-        "admin_account": {
-            "title": "アカウント"
+        "account": {
+            "title": "アカウント",
+            "description": "",
+            "admin_name": {
+                "label": "アカウント名",
+                "placeholder": "作成するアカウント名を入力",
+                "spec":"一部の特殊文字は使用出来ません。"
+            },
+            "password": {
+                "label": "パスワード",
+                "placeholder": "作成するアカウントのパスワードを入力",
+                "spec": "半角英数字、半角アンダーバー、および半角ハイフン(32字以内)。"
+            },
+            "confirm_password": {
+                "label": "パスワードの確認",
+                "placeholder": "パスワードの確認入力"
+            }
         }
     },
     "label": {
@@ -20,17 +51,6 @@
         "title": "セルの作成"
     },
     "create_form": {
-        "account_name": "作成するアカウント名を入力",
-        "password": "作成するアカウントのパスワードを入力",
-        "confirm_password": "パスワードの確認入力",
-        "cell_type": {
-            "description": "Cell種別を選択してください",
-            "options": {
-                "Person": "ヒト",
-                "Organization": "組織",
-                "App": "アプリ"
-            }
-        },
         "ok_button": "作成",
         "validate": {
             "warning": {
@@ -44,14 +64,10 @@
         "msg": {
             "info": {
                 "cell_created": "セルを作成しました。",
-                "private_profile_cell_created": "セルの作成に成功しました。プロフィールは非公開です。",
-                "cellName": "先頭英数字+半角英数字、半角アンダーバー、および半角ハイフン(128字以内)",
-                "adminName": "一部の特殊文字は使用出来ません。",
-                "adminPassword": "半角英数字、半角アンダーバー、および半角ハイフン(32字以内)"
+                "private_profile_cell_created": "セルの作成に成功しました。プロフィールは非公開です。"
             },
             "error": {
-                "fail_to_create_cell": "セル作成に失敗しました。",
-                "cell_already_exist": "既に存在します。"
+                "fail_to_create_cell": "セル作成に失敗しました。"
             }
         }
     }

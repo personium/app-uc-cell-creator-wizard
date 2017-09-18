@@ -4,13 +4,44 @@
     "wizard_pane": {
         "cell_info": {
             "title": "Cell",
+            "description": "Enter a name and select which cell type is to be created.",
             "cell_name": {
                 "label": "Cell Name",
-                "placeholder": "Name of the new cell"
+                "placeholder": "Name of the new cell",
+                "spec": "Must be 128 characters or less and start with alphanumeric and the rest contains alphanumeric, underscores or hyphens.",
+                "cell_already_exist": "Cell already exists."
+            },
+            "cell_type": {
+                "label": "Cell Type",
+                "options": {
+                    "Person": "Person",
+                    "Organization": "Organization",
+                    "App": "App"
+                },
+                "tooltips": {
+                    "Person": "A cell for data subject",
+                    "Organization": "A cell for data consumer or provider",
+                    "App": "A cell for Personium app"
+                }
             }
         },
-        "admin_account": {
-            "title": "Account"
+        "account": {
+            "title": "Account",
+            "description": "",
+            "admin_name": {
+                "label": "Account Name",
+                "placeholder": "Name of the new admin account",
+                "spec":"Please do not use unsupported symbol(s)."
+            },
+            "password": {
+                "label": "Password",
+                "placeholder": "Create a password",
+                "spec": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens."
+            },
+            "confirm_password": {
+                "label": "Confrm Password",
+                "placeholder": "Confirm your password"
+            }
         }
     },
     "label": {
@@ -20,17 +51,6 @@
         "title": "Cell Creation"
     },
     "create_form": {
-        "account_name": "Name of the new admin account",
-        "password": "Create a password",
-        "confirm_password": "Confirm your password",
-        "cell_type": {
-            "description": "Please select your cell type",
-            "options": {
-                "Person": "Person",
-                "Organization": "Organization",
-                "App": "App"
-            }
-        },
         "ok_button": "Create",
         "validate": {
             "warning": {
@@ -44,14 +64,10 @@
         "msg": {
             "info": {
                 "cell_created": "Cell successfully created.",
-                "private_profile_cell_created": "$t(create_form.msg.info.cell_created) However cell's profile is private.",
-                "cellName": "Must be 128 characters or less and start with alphanumeric and the rest contains alphanumeric, underscores or hyphens",
-                "adminName": "Please do not use unsupported symbol(s).",
-                "adminPassword": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens"
+                "private_profile_cell_created": "$t(create_form.msg.info.cell_created) However cell's profile is private."
             },
             "error": {
-                "fail_to_create_cell": "Failed to create a cell.",
-                "cell_already_exist": "Cell already exists."
+                "fail_to_create_cell": "Failed to create a cell."
             }
         }
     }

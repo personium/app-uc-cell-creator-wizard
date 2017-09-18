@@ -56,53 +56,56 @@
                 <div class="wizard-navigation">
                   <ul>
                     <li><a href="#cell_info" data-toggle="tab" data-i18n="wizard_pane.cell_info.title">Cell</a></li>
-                    <li><a href="#admin_account" data-toggle="tab" data-i18n="wizard_pane.admin_account.title">Account</a></li>
-                    <li><a href="#account" data-toggle="tab">Account</a></li>
-                    <li><a href="#address" data-toggle="tab">Address</a></li>
+                    <li><a href="#account" data-toggle="tab" data-i18n="wizard_pane.account.title">Account</a></li>
+                    <li><a href="#profile" data-toggle="tab">Profile</a></li>
+                    <li><a href="#confirm" data-toggle="tab">Confirm</a></li>
                   </ul>
                 </div>
                 <div class="tab-content">
                   <div class="tab-pane" id="cell_info">
                     <div class="row">
-                      <h4 class="info-text"> Let's start with the basic information (with validation)</h4>
+                      <h4 class="info-text" data-i18n="wizard_pane.cell_info.description"></h4>
                       <div class="col-sm-10 col-sm-offset-1">
                         <div class="form-group">
                           <label data-i18n="wizard_pane.cell_info.cell_name.label"><small data-i18n="label.required"></small></label>
-                          <input name="cell_name" type="text" class="form-control" data-i18n="[placeholder]wizard_pane.cell_info.cell_name.placeholder">
+                          <input id="cell_name" name="cell_name" type="text" autocomplete="off" class="form-control" data-i18n="[placeholder]wizard_pane.cell_info.cell_name.placeholder">
                         </div>
                       </div>
                       <div class="col-sm-10 col-sm-offset-1">
+                        <div class="form-group cell_type">
+                          <label data-i18n="wizard_pane.cell_info.cell_type.label"></label>
+                        </div>
                         <div class="col-sm-4">
-                          <div class="choice active" data-toggle="wizard-radio">
+                          <div class="choice cell_type active" data-toggle="wizard-radio" rel="tooltip" data-i18n="[title]wizard_pane.cell_info.cell_type.tooltips.Person;[data-original-title]wizard_pane.cell_info.cell_type.tooltips.Person">
                             <input type="radio" name="cell_type" value="Person" checked="checked">
                             <div class="icon">
-                              <i class="fa fa-pencil"></i>
+                              <i class="fa fa-user fa-4x" aria-hidden="true"></i>
                             </div>
-                            <h6>Person</h6>
+                            <h6 data-i18n="wizard_pane.cell_info.cell_type.options.Person"></h6>
                           </div>
                         </div>
                         <div class="col-sm-4">
-                          <div class="choice" data-toggle="wizard-radio">
+                          <div class="choice cell_type" data-toggle="wizard-radio" rel="tooltip" data-i18n="[title]wizard_pane.cell_info.cell_type.tooltips.Organization;[data-original-title]wizard_pane.cell_info.cell_type.tooltips.Organization">
                             <input type="radio" name="cell_type" value="Organization">
                             <div class="icon">
-                              <i class="fa fa-terminal"></i>
+                              <i class="fa fa-building fa-4x" aria-hidden="true"></i>
                             </div>
-                            <h6>Organization</h6>
+                            <h6 data-i18n="wizard_pane.cell_info.cell_type.options.Organization"></h6>
                           </div>
                         </div>
                         <div class="col-sm-4">
-                          <div class="choice" data-toggle="wizard-radio">
+                          <div class="choice cell_type" data-toggle="wizard-radio" rel="tooltip" data-i18n="[title]wizard_pane.cell_info.cell_type.tooltips.App;[data-original-title]wizard_pane.cell_info.cell_type.tooltips.App">
                             <input type="radio" name="cell_type" value="App">
                             <div class="icon">
-                              <i class="fa fa-laptop"></i>
+                              <i class="fa fa-mobile fa-5x" aria-hidden="true"></i>
                             </div>
-                            <h6>App</h6>
+                            <h6 data-i18n="wizard_pane.cell_info.cell_type.options.App"></h6>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="tab-pane" id="admin_account">
+                  <div class="tab-pane" id="account">
                     <div class="row">
                       <h4 class="info-text"> Let's start with the basic information (with validation)</h4>
                       <div class="col-sm-4 col-sm-offset-1">
@@ -132,7 +135,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="tab-pane" id="account">
+                  <div class="tab-pane" id="profile">
                     <h4 class="info-text"> What are you doing? (checkboxes) </h4>
                     <div class="row">
                       <div class="col-sm-10 col-sm-offset-1">
@@ -166,7 +169,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="tab-pane" id="address">
+                  <div class="tab-pane" id="confirm">
                     <div class="row">
                       <div class="col-sm-12">
                         <h4 class="info-text"> Are you living in a nice area? </h4>
@@ -239,6 +242,9 @@
 
   <!--  Plugin for the Wizard -->
   <script src="assets/js/gsdk-bootstrap-wizard.js"></script>
+
+  <!-- Personium -->
+  <script src="js/personium.js"></script>
 
   <!--  More information about jquery.validate here: http://jqueryvalidation.org/  -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>

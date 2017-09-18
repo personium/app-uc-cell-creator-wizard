@@ -18,55 +18,9 @@
 searchVisible = 0;
 transparent = true;
 
-$(document).ready(function(){
-    i18next
-        .use(i18nextXHRBackend)
-        .use(i18nextBrowserLanguageDetector)
-        .init({
-            fallbackLng: 'en',
-            debug: true,
-            backend: {
-                // load from i18next-gitbook repo
-                loadPath: './locales/{{lng}}/translation.json',
-                crossDomain: true
-            }
-        }, function(err, t) {
-            initJqueryI18next();
-            
-            // define your own additionalCallback for each App/screen
-            if ((typeof additionalCallback !== "undefined") && $.isFunction(additionalCallback)) {
-                additionalCallback();
-            }
-
-            updateContent();
-
-            // Special routine for reshowing the rendered contents (originally hidden bare HTML)
-            $('#loading_spinner').hide();
-            $('#wizardProfile').css('visibility', 'visible');
-        });
-});
-
 additionalCallback = function() {
-    /*  Activate the tooltips      */
-    $('[rel="tooltip"]').tooltip();
-
     // Code for the Validator
-    var $validator = $('.wizard-card form').validate({
-		  rules: {
-		    firstname: {
-		      required: true,
-		      minlength: 3
-		    },
-		    lastname: {
-		      required: true,
-		      minlength: 3
-		    },
-		    email: {
-		      required: true,
-		      minlength: 3,
-		    }
-        }
-	});
+    configureJQueryValidation();
 
     // Need to tranlate the pane title first
     $('.wizard-navigation [data-i18n]').localize();
@@ -186,21 +140,7 @@ additionalCallback = function() {
     $('.set-full-height').css('height', 'auto');
 };
 
-initJqueryI18next = function() {
-    // for options see
-    // https://github.com/i18next/jquery-i18next#initialize-the-plugin
-    jqueryI18next.init(i18next, $, {
-        useOptionsAttr: true
-    });
-}
-
-updateContent = function() {
-    // start localizing, details:
-    // https://github.com/i18next/jquery-i18next#usage-of-selector-function
-    $('[data-i18n]').localize();
-}
-
- //Function to show image before upload
+//Function to show image before upload
 
 function readURL(input) {
     if (input.files && input.files[0]) {

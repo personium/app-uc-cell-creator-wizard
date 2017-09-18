@@ -38,6 +38,15 @@ input[type="button"]:focus {
   outline: 0;
 }
 
+.form-group.cell_type {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+.choice.cell_type {
+  margin-top: 0px !important;
+}
+
 /*           Animations              */
 .form-control, .input-group-addon {
   -webkit-transition: all 300ms linear;
@@ -374,7 +383,6 @@ h1 .subtitle {
   -webkit-transition: all 0.2s;
 }
 .wizard-card .choice i {
-  font-size: 30px;
   line-height: 111px;
 }
 .wizard-card .choice:hover .icon, .wizard-card .choice.active .icon {
