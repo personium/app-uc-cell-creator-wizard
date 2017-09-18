@@ -89,7 +89,7 @@ $(document).ready(function(){
             debug: true,
             backend: {
                 // load from i18next-gitbook repo
-                loadPath: './locales/{{lng}}/translation.json',
+                loadPath: './locales/{{lng}}/wizard.json',
                 crossDomain: true
             }
         }, function(err, t) {
@@ -193,7 +193,10 @@ setMessagesLanguage_ja = function() {
             range: $.validator.format( "{0} から {1} までの値を入力してください。" ),
             step: $.validator.format( "{0} の倍数を入力してください。" ),
             max: $.validator.format( "{0} 以下の値を入力してください。" ),
-            min: $.validator.format( "{0} 以上の値を入力してください。" )
+            min: $.validator.format( "{0} 以上の値を入力してください。" ),
+            cellName: i18next.t("wizard_pane.cell_info.cell_name.spec"),
+            adminName: i18next.t("wizard_pane.account.admin.name.spec"),
+            adminPassword: i18next.t("wizard_pane.account.admin.password.spec")
         }
     );
 };
@@ -219,8 +222,8 @@ restoreDefaultValidatorMessages = function() {
             min: $.validator.format( "Please enter a value greater than or equal to {0}." ),
             step: $.validator.format( "Please enter a multiple of {0}." ),
             cellName: i18next.t("wizard_pane.cell_info.cell_name.spec"),
-            adminName: i18next.t("wizard_pane.account.admin_name.spec"),
-            adminPassword: i18next.t("wizard_pane.account.password.spec")
+            adminName: i18next.t("wizard_pane.account.admin.name.spec"),
+            adminPassword: i18next.t("wizard_pane.account.admin.password.spec")
         }
     );
 };
