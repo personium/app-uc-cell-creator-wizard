@@ -67,7 +67,7 @@
                       <h4 class="info-text" data-i18n="wizard_pane.cell_info.description"></h4>
                       <div class="col-sm-10 col-sm-offset-1">
                         <div class="form-group">
-                          <label data-i18n="wizard_pane.cell_info.cell_name.label"><small data-i18n="label.required"></small></label>
+                          <label data-i18n="[html]wizard_pane.cell_info.cell_name.label"></label>
                           <input id="cell_name" name="cell_name" type="text" autocomplete="off" class="form-control" data-i18n="[placeholder]wizard_pane.cell_info.cell_name.placeholder">
                         </div>
                       </div>
@@ -108,6 +108,25 @@
                   <div class="tab-pane" id="account">
                     <div class="row">
                       <h4 class="info-text"> Let's start with the basic information (with validation)</h4>
+                      <div class="col-sm-10 col-sm-offset-1" >
+                        <div class="form-group">
+                          <label data-i18n="[html]wizard_pane.account.admin_name.label"></label>
+                          <input name="admin_name" type="text" class="form-control" data-i18n="[placeholder]wizard_pane.account.admin_name.placeholder">
+                        </div>
+                        <div class="form-group">
+                          <label data-i18n="[html]wizard_pane.account.password.label"></label>
+                          <input id="admin_password" name="admin_password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.password.placeholder">
+                        </div>
+                        <div class="form-group">
+                          <label data-i18n="[html]wizard_pane.account.confirm_password.label"></label>
+                          <input name="admin_confirm_password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.confirm_password.placeholder">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane" id="profile">
+                    <div class="row">
+                      <h4 class="info-text"> Let's start with the basic information (with validation)</h4>
                       <div class="col-sm-4 col-sm-offset-1">
                         <div class="picture-container">
                           <div class="picture">
@@ -131,40 +150,6 @@
                         <div class="form-group">
                           <label>Email <small>(required)</small></label>
                           <input name="email" type="email" class="form-control" placeholder="andrew@creative-tim.com">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="tab-pane" id="profile">
-                    <h4 class="info-text"> What are you doing? (checkboxes) </h4>
-                    <div class="row">
-                      <div class="col-sm-10 col-sm-offset-1">
-                        <div class="col-sm-4">
-                          <div class="choice active" data-toggle="wizard-radio">
-                            <input type="radio" name="cell_type" value="Person" checked="checked">
-                            <div class="icon">
-                              <i class="fa fa-pencil"></i>
-                            </div>
-                            <h6>Person</h6>
-                          </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="choice" data-toggle="wizard-radio">
-                            <input type="radio" name="cell_type" value="Organization">
-                            <div class="icon">
-                              <i class="fa fa-terminal"></i>
-                            </div>
-                            <h6>Organization</h6>
-                          </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="choice" data-toggle="wizard-radio">
-                            <input type="radio" name="cell_type" value="App">
-                            <div class="icon">
-                              <i class="fa fa-laptop"></i>
-                            </div>
-                            <h6>App</h6>
-                          </div>
                         </div>
                       </div>
                     </div>

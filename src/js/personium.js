@@ -229,17 +229,22 @@ configureTarget = function() {
                 cellName: true,
                 rangelength: [1, 128]
             },
-            firstname: {
-              required: true,
-              minlength: 3
+            admin_name: {
+                required: true,
+                adminName: true,
+                rangelength: [1, 128]
+                
             },
-            lastname: {
-              required: true,
-              minlength: 3
+            admin_password: {
+                required: true,
+                adminPassword: true,
+                rangelength: [6, 32]
             },
-            email: {
-              required: true,
-              minlength: 3,
+            admin_confirm_password: {
+                required: true,
+                equalTo: "#admin_password",
+                adminPassword: true,
+                rangelength: [6, 32]
             }
         }
     });

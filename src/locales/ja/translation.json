@@ -6,7 +6,7 @@
             "title": "Cell",
             "description": "名前を記入し、cell種別を選択してください。",
             "cell_name": {
-                "label": "Cell名",
+                "label": "Cell名<small data-i18n='label.required'></small>",
                 "placeholder": "作成するセル名を入力",
                 "spec": "先頭英数字+半角英数字、半角アンダーバー、および半角ハイフン(128字以内)",
                 "cell_already_exist": "既に存在します。"
@@ -29,17 +29,17 @@
             "title": "アカウント",
             "description": "",
             "admin_name": {
-                "label": "アカウント名",
+                "label": "アカウント名<small data-i18n='label.required'></small>",
                 "placeholder": "作成するアカウント名を入力",
                 "spec":"一部の特殊文字は使用出来ません。"
             },
             "password": {
-                "label": "パスワード",
+                "label": "パスワード<small data-i18n='label.required'></small>",
                 "placeholder": "作成するアカウントのパスワードを入力",
                 "spec": "半角英数字、半角アンダーバー、および半角ハイフン(32字以内)。"
             },
             "confirm_password": {
-                "label": "パスワードの確認",
+                "label": "パスワードの確認<small data-i18n='label.required'></small>",
                 "placeholder": "パスワードの確認入力"
             }
         },
@@ -50,22 +50,13 @@
         }
     },
     "label": {
-        "required": "(required)"
+        "required": "（必須）"
     },
     "resultDialog": {
         "title": "セルの作成"
     },
     "create_form": {
         "ok_button": "作成",
-        "validate": {
-            "warning": {
-                "less_minimum_length": "{{value}}文字以上を入力して下さい。",
-                "exceed_maximum_length": "{{value}}文字以下で入力して下さい。",
-                "multibyte_not_allowed": "全角文字は使用出来ません。",
-                "cannot_start_with_symbol": "特殊文字で始めることは出来ません。",
-                "unsupported_symbols": "特殊文字は“-”と“_”のみ使用出来ます。"
-            }
-        },
         "msg": {
             "info": {
                 "cell_created": "セルを作成しました。",

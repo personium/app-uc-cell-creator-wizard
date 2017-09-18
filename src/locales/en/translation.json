@@ -6,7 +6,7 @@
             "title": "Cell",
             "description": "Enter a name and select which cell type is to be created.",
             "cell_name": {
-                "label": "Cell Name",
+                "label": "Cell Name <small data-i18n='label.required'></small>",
                 "placeholder": "Name of the new cell",
                 "spec": "Must be 128 characters or less and start with alphanumeric and the rest contains alphanumeric, underscores or hyphens.",
                 "cell_already_exist": "Cell already exists."
@@ -29,17 +29,17 @@
             "title": "Account",
             "description": "",
             "admin_name": {
-                "label": "Account Name",
+                "label": "Account Name  <small data-i18n='label.required'></small>",
                 "placeholder": "Name of the new admin account",
                 "spec":"Please do not use unsupported symbol(s)."
             },
             "password": {
-                "label": "Password",
+                "label": "Password  <small data-i18n='label.required'></small>",
                 "placeholder": "Create a password",
                 "spec": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens."
             },
             "confirm_password": {
-                "label": "Confrm Password",
+                "label": "Confrm Password  <small data-i18n='label.required'></small>",
                 "placeholder": "Confirm your password"
             }
         },
@@ -57,15 +57,6 @@
     },
     "create_form": {
         "ok_button": "Create",
-        "validate": {
-            "warning": {
-                "less_minimum_length": "Please enter at least {{value}} character(s).",
-                "exceed_maximum_length": "Please enter {{value}} characters or less.",
-                "multibyte_not_allowed": "Multibyte characters are not allowed.",
-                "cannot_start_with_symbol": "Cannot start with symbols.",
-                "unsupported_symbols": "Please do not use unsupported symbol(s)."
-            }
-        },
         "msg": {
             "info": {
                 "cell_created": "Cell successfully created.",
