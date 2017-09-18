@@ -42,6 +42,11 @@
                 "label": "パスワードの確認",
                 "placeholder": "パスワードの確認入力"
             }
+        },
+        "buttons": {
+            "previous": "前へ",
+            "next": "次へ",
+            "finish": "Finish"
         }
     },
     "label": {

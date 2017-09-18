@@ -42,6 +42,11 @@
                 "label": "Confrm Password",
                 "placeholder": "Confirm your password"
             }
+        },
+        "buttons": {
+            "previous": "Previous",
+            "next": "Next",
+            "finish": "Finish"
         }
     },
     "label": {

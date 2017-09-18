@@ -123,23 +123,22 @@ updateContent = function() {
     /*
      * Activate the tooltips after i18next has translated the title attributes
      */
-    $('[rel="tooltip"]')
-        .tooltip();
+    $('[rel="tooltip"]').tooltip();
 };
+
+changeLanaguage = function(lang) {
+    i18next.changeLanguage(lang, function() {
+        setMessagesLanguage(lang);
+        updateContent();
+    });
+}
 
 configureJQueryValidation = function() {
     createExtraRules();
 
-    switch(i18next.language) {
-    case "ja":
-    case "ja-JP":
-        $.getScript(jqueryValidateMessage_ja, function() {
-            configureTarget();
-        });
-        break;
-    default:
-        configureTarget();
-    }
+    setMessagesLanguage(i18next.language);
+
+    configureTarget();
 };
 
 createExtraRules = function() {
@@ -154,9 +153,77 @@ createExtraRules = function() {
     }, i18next.t("wizard_pane.account.password.spec"));
 };
 
+setMessagesLanguage = function(lang) {
+    switch(lang) {
+    case "ja":
+    case "ja-JP":
+        setMessagesLanguage_ja();
+        break;
+    default:
+        restoreDefaultValidatorMessages();
+    }
+};
+
+setMessagesLanguage_ja = function() {
+    /*
+     * Translated default messages for the jQuery validation plugin.
+     * Locale: JA (Japanese; 日本語)
+     */
+    $.extend(
+        $.validator.messages,
+        {
+            required: "このフィールドは必須です。",
+            remote: "このフィールドを修正してください。",
+            email: "有効なEメールアドレスを入力してください。",
+            url: "有効なURLを入力してください。",
+            date: "有効な日付を入力してください。",
+            dateISO: "有効な日付（ISO）を入力してください。",
+            number: "有効な数字を入力してください。",
+            digits: "数字のみを入力してください。",
+            creditcard: "有効なクレジットカード番号を入力してください。",
+            equalTo: "同じ値をもう一度入力してください。",
+            extension: "有効な拡張子を含む値を入力してください。",
+            maxlength: $.validator.format( "{0} 文字以内で入力してください。" ),
+            minlength: $.validator.format( "{0} 文字以上で入力してください。" ),
+            rangelength: $.validator.format( "{0} 文字から {1} 文字までの値を入力してください。" ),
+            range: $.validator.format( "{0} から {1} までの値を入力してください。" ),
+            step: $.validator.format( "{0} の倍数を入力してください。" ),
+            max: $.validator.format( "{0} 以下の値を入力してください。" ),
+            min: $.validator.format( "{0} 以上の値を入力してください。" )
+        }
+    );
+};
+
+restoreDefaultValidatorMessages = function() {
+    $.extend(
+        $.validator.messages,
+        {
+            required: "This field is required.",
+            remote: "Please fix this field.",
+            email: "Please enter a valid email address.",
+            url: "Please enter a valid URL.",
+            date: "Please enter a valid date.",
+            dateISO: "Please enter a valid date (ISO).",
+            number: "Please enter a valid number.",
+            digits: "Please enter only digits.",
+            equalTo: "Please enter the same value again.",
+            maxlength: $.validator.format( "Please enter no more than {0} characters." ),
+            minlength: $.validator.format( "Please enter at least {0} characters." ),
+            rangelength: $.validator.format( "Please enter a value between {0} and {1} characters long." ),
+            range: $.validator.format( "Please enter a value between {0} and {1}." ),
+            max: $.validator.format( "Please enter a value less than or equal to {0}." ),
+            min: $.validator.format( "Please enter a value greater than or equal to {0}." ),
+            step: $.validator.format( "Please enter a multiple of {0}." ),
+            cellName: i18next.t("wizard_pane.cell_info.cell_name.spec"),
+            adminName: i18next.t("wizard_pane.account.admin_name.spec"),
+            adminPassword: i18next.t("wizard_pane.account.password.spec")
+        }
+    );
+};
+
 configureTarget = function() {
     $validator = $('.wizard-card form').validate({
-          rules: {
+        rules: {
             cell_name: {
                 required: true,
                 cellName: true,
