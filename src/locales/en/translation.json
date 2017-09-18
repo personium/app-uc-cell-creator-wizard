@@ -27,20 +27,39 @@
         },
         "account": {
             "title": "Account",
-            "description": "",
-            "admin_name": {
-                "label": "Account Name  <small data-i18n='label.required'></small>",
-                "placeholder": "Name of the new admin account",
-                "spec":"Please do not use unsupported symbol(s)."
+            "admin": {
+                "description": "Admin User Account",
+                "name": {
+                    "label": "Name <small data-i18n='label.required'></small>",
+                    "placeholder": "Name of the new admin account",
+                    "spec":"Please do not use unsupported symbol(s)."
+                },
+                "password": {
+                    "label": "Password <small data-i18n='label.required'></small>",
+                    "placeholder": "Create a password",
+                    "spec": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens."
+                },
+                "confirm_password": {
+                    "label": "Confrm Password <small data-i18n='label.required'></small>",
+                    "placeholder": "Confirm your password"
+                }
             },
-            "password": {
-                "label": "Password  <small data-i18n='label.required'></small>",
-                "placeholder": "Create a password",
-                "spec": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens."
-            },
-            "confirm_password": {
-                "label": "Confrm Password  <small data-i18n='label.required'></small>",
-                "placeholder": "Confirm your password"
+            "app": {
+                "description": "App User Account",
+                "name": {
+                    "label": "Name",
+                    "placeholder": "Name of the new admin account",
+                    "spec":"Please do not use unsupported symbol(s)."
+                },
+                "password": {
+                    "label": "Password",
+                    "placeholder": "Create a password",
+                    "spec": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens."
+                },
+                "confirm_password": {
+                    "label": "Confrm Password",
+                    "placeholder": "Confirm your password"
+                }
             }
         },
         "buttons": {

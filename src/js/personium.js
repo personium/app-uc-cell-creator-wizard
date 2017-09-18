@@ -147,10 +147,10 @@ createExtraRules = function() {
     }, i18next.t("wizard_pane.cell_info.cell_name.spec"));
     $.validator.addMethod("adminName", function(value, element) {
         return this.optional(element) || /^[a-zA-Z0-9][a-zA-Z0-9-_!$*=^`{|}~.@]{0,127}$/.test(value);
-    }, i18next.t("wizard_pane.account.admin_name.spec"));
+    }, i18next.t("wizard_pane.account.admin.name.spec"));
     $.validator.addMethod("adminPassword", function(value, element) {
         return this.optional(element) || /^[a-zA-Z0-9-_]{0,}$/.test(value);
-    }, i18next.t("wizard_pane.account.password.spec"));
+    }, i18next.t("wizard_pane.account.admin.password.spec"));
 };
 
 setMessagesLanguage = function(lang) {
@@ -245,6 +245,23 @@ configureTarget = function() {
                 equalTo: "#admin_password",
                 adminPassword: true,
                 rangelength: [6, 32]
+            },
+            name: {
+                required: false,
+                adminName: true,
+                rangelength: [1, 128]
+                
+            },
+            password: {
+                required: false,
+                adminPassword: true,
+                rangelength: [6, 32]
+            },
+            confirm_password: {
+                required: false,
+                equalTo: "#password",
+                adminPassword: true,
+                rangelength: [6, 32]
             }
         }
     });
@@ -257,6 +274,11 @@ checkCellExist = function (tab, navigation, nextIndex) {
         getCell(cellName).done(function(data, status, xhr) {
             showErrorsCellName();
         }).fail(function(data) {
+            if (getSelectedCellType() == "App") {
+                $('#app_account').show();
+            } else {
+                $('#app_account').hide();
+            }
             navigation.find('li:has([data-toggle="tab"])' + ':eq('+nextIndex+') a').tab('show');
         });
     }

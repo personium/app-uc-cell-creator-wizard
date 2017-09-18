@@ -27,20 +27,39 @@
         },
         "account": {
             "title": "アカウント",
-            "description": "",
-            "admin_name": {
-                "label": "アカウント名<small data-i18n='label.required'></small>",
-                "placeholder": "作成するアカウント名を入力",
-                "spec":"一部の特殊文字は使用出来ません。"
+            "admin": {
+                "description": "Admin ユーザー アカウント",
+                "name": {
+                    "label": "アカウント名<small data-i18n='label.required'></small>",
+                    "placeholder": "作成するアカウント名を入力",
+                    "spec":"一部の特殊文字は使用出来ません。"
+                },
+                "password": {
+                    "label": "パスワード<small data-i18n='label.required'></small>",
+                    "placeholder": "作成するアカウントのパスワードを入力",
+                    "spec": "半角英数字、半角アンダーバー、および半角ハイフン(32字以内)。"
+                },
+                "confirm_password": {
+                    "label": "パスワードの確認<small data-i18n='label.required'></small>",
+                    "placeholder": "パスワードの確認入力"
+                }
             },
-            "password": {
-                "label": "パスワード<small data-i18n='label.required'></small>",
-                "placeholder": "作成するアカウントのパスワードを入力",
-                "spec": "半角英数字、半角アンダーバー、および半角ハイフン(32字以内)。"
-            },
-            "confirm_password": {
-                "label": "パスワードの確認<small data-i18n='label.required'></small>",
-                "placeholder": "パスワードの確認入力"
+            "app": {
+                "description": "アプリ ユーザー アカウント",
+                "name": {
+                    "label": "アカウント名",
+                    "placeholder": "作成するアカウント名を入力",
+                    "spec":"一部の特殊文字は使用出来ません。"
+                },
+                "password": {
+                    "label": "パスワード",
+                    "placeholder": "作成するアカウントのパスワードを入力",
+                    "spec": "半角英数字、半角アンダーバー、および半角ハイフン(32字以内)。"
+                },
+                "confirm_password": {
+                    "label": "パスワードの確認",
+                    "placeholder": "パスワードの確認入力"
+                }
             }
         },
         "buttons": {

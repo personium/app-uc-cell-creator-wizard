@@ -107,19 +107,36 @@
                   </div>
                   <div class="tab-pane" id="account">
                     <div class="row">
-                      <h4 class="info-text"> Let's start with the basic information (with validation)</h4>
+                      <h4 class="info-text" data-i18n="wizard_pane.account.admin.description"></h4>
                       <div class="col-sm-10 col-sm-offset-1" >
                         <div class="form-group">
-                          <label data-i18n="[html]wizard_pane.account.admin_name.label"></label>
-                          <input name="admin_name" type="text" class="form-control" data-i18n="[placeholder]wizard_pane.account.admin_name.placeholder">
+                          <label data-i18n="[html]wizard_pane.account.admin.name.label"></label>
+                          <input name="admin_name" type="text" class="form-control" data-i18n="[placeholder]wizard_pane.account.admin.name.placeholder">
                         </div>
                         <div class="form-group">
-                          <label data-i18n="[html]wizard_pane.account.password.label"></label>
-                          <input id="admin_password" name="admin_password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.password.placeholder">
+                          <label data-i18n="[html]wizard_pane.account.admin.password.label"></label>
+                          <input id="admin_password" name="admin_password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.admin.password.placeholder">
                         </div>
                         <div class="form-group">
-                          <label data-i18n="[html]wizard_pane.account.confirm_password.label"></label>
-                          <input name="admin_confirm_password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.confirm_password.placeholder">
+                          <label data-i18n="[html]wizard_pane.account.admin.confirm_password.label"></label>
+                          <input name="admin_confirm_password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.admin.confirm_password.placeholder">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="app_account" class="row">
+                      <h4 class="info-text" data-i18n="wizard_pane.account.app.description"></h4>
+                      <div class="col-sm-10 col-sm-offset-1" >
+                        <div class="form-group">
+                          <label data-i18n="[html]wizard_pane.account.app.name.label"></label>
+                          <input name="name" type="text" class="form-control" data-i18n="[placeholder]wizard_pane.account.app.name.placeholder">
+                        </div>
+                        <div class="form-group">
+                          <label data-i18n="[html]wizard_pane.account.app.password.label"></label>
+                          <input id="password" name="password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.app.password.placeholder">
+                        </div>
+                        <div class="form-group">
+                          <label data-i18n="[html]wizard_pane.account.app.confirm_password.label"></label>
+                          <input name="confirm_password" type="password" class="form-control" data-i18n="[placeholder]wizard_pane.account.app.confirm_password.placeholder">
                         </div>
                       </div>
                     </div>

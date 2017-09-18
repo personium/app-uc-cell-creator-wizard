@@ -364,6 +364,10 @@ h1 .subtitle {
   font-weight: 300;
   margin: 10px 0 30px;
 }
+
+#app_account .info-text {
+  margin: 40px 0 30px;
+}
 .wizard-card .choice {
   text-align: center;
   cursor: pointer;
