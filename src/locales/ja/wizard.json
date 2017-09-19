@@ -4,7 +4,7 @@
     "wizard_pane": {
         "cell_info": {
             "title": "Cell",
-            "description": "名前を記入し、cell種別を選択してください。",
+            "description": "Cell 基本情報",
             "cell_name": {
                 "label": "Cell名<small data-i18n='label.required'></small>",
                 "placeholder": "作成するセル名を入力",
@@ -64,7 +64,7 @@
         },
         "profile": {
             "title": "プロフィール",
-            "description": "プロフィール編集",
+            "description": "Cell プロフィール",
             "DisplayName": {
                 "label": "表示名",
                 "placeholder": "",
@@ -82,7 +82,7 @@
         "buttons": {
             "previous": "前へ",
             "next": "次へ",
-            "finish": "Finish"
+            "finish": "作成"
         }
     },
     "label": {

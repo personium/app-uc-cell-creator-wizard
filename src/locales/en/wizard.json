@@ -4,7 +4,7 @@
     "wizard_pane": {
         "cell_info": {
             "title": "Cell",
-            "description": "Enter a name and select which cell type is to be created.",
+            "description": "Basic Cell Info",
             "cell_name": {
                 "label": "Cell Name <small data-i18n='label.required'></small>",
                 "placeholder": "Name of the new cell",
@@ -64,7 +64,7 @@
         },
         "profile": {
             "title": "Profile",
-            "description": "Edit Profile",
+            "description": "Cell Profile",
             "DisplayName": {
                 "label": "Display Name",
                 "placeholder": "",
@@ -82,7 +82,7 @@
         "buttons": {
             "previous": "Previous",
             "next": "Next",
-            "finish": "Finish"
+            "finish": "Create"
         }
     },
     "label": {
