@@ -279,6 +279,7 @@ configureTarget = function() {
 
 checkCellExist = function (tab, navigation, nextIndex) {
     console.log("checkCellExist");
+    $('#cell_name_spinner').show();
     let cellName = $("#cell_name").val();
     if (cellName) {
         getCell(cellName).done(function(data, status, xhr) {
@@ -290,6 +291,8 @@ checkCellExist = function (tab, navigation, nextIndex) {
                 $('#app_account').hide();
             }
             navigation.find('li:has([data-toggle="tab"])' + ':eq('+nextIndex+') a').tab('show');
+        }).always(function(){
+            $('#cell_name_spinner').hide();
         });
     }
 };
