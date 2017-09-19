@@ -19,6 +19,8 @@ searchVisible = 0;
 transparent = true;
 
 additionalCallback = function() {
+    appendCommonDialog();
+    
     // Code for the Validator
     configureJQueryValidation();
 

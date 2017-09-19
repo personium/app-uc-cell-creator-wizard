@@ -86,13 +86,13 @@
         }
     },
     "label": {
-        "required": "(required)"
+        "required": "(required)",
+        "ok": "OK"
     },
     "resultDialog": {
         "title": "Cell Creation"
     },
     "create_form": {
-        "ok_button": "Create",
         "msg": {
             "info": {
                 "cell_created": "Cell successfully created.",

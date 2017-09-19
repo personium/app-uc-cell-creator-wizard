@@ -49,7 +49,7 @@ var HomeApplication = {
         return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_HomeApplication/src/login.html';
     },
     enableInstall: function() {
-        return !(_.contains(this.disabledList, $("#cell_type").val()));
+        return !(_.contains(this.disabledList, getSelectedCellType()));
     },
     installHomeApplicationBox: function(token) {
         var oReq = new XMLHttpRequest(); // binary
@@ -273,6 +273,11 @@ configureTarget = function() {
                 required: true,
                 rangelength: [1, 128]
             }
+        },
+        submitHandler: function(form) {
+            console.log("submit");
+            createCell();
+            return false;
         }
     });
 };
@@ -329,13 +334,146 @@ initializeProfile = function(defaultProfileUrl) {
     });
 };
 
+getProfile = function(url) {
+    return $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'json',
+        headers: {'Accept':'application/json'}
+    });
+};
+
+createCell = function () {
+    createCellAPI().done(function(data) {
+        let access_token = data.access_token;
+        let cellProfileUrl = [
+            targetRootUrl,
+            $("#cell_name").val(),
+            '/__/profile.json'
+        ].join("");
+        setMainBoxACL(access_token).done(function() {
+            openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
+        }).fail(function() {
+            openCommonDialog('resultDialog.title', 'create_form.msg.info.private_profile_cell_created');
+        }).always(function() {
+            $('<input>', {
+                value: $("#cell_name").val(),
+                readonly: true
+            }).appendTo("#modal-common .modal-body");
+
+            uploadDefaultProfile(access_token, cellProfileUrl);
+
+            if (HomeApplication.enableInstall()) {
+                HomeApplication.installHomeApplicationBox(access_token);
+                $("#modal-common .modal-body").append($(createQRCodeImg(HomeApplication.loginUrl())));
+            };
+        });
+    }).fail(function() {
+        //displayFailureMsg(i18next.t("create_form.msg.error.fail_to_create_cell"));
+    });
+};
+
+createCellAPI = function () {
+    return $.ajax({
+        type:"POST",
+        url: createCellApiUrl, // unitService engine URL (where this service is deployed)
+        data: {
+            'cellName': $("#cell_name").val(),
+            'accName': $("#admin_name").val(),
+            'accPass': $("#admin_password").val()
+        },
+        headers: {
+            'Accept':'application/json'
+        }
+    });
+};
+
+setMainBoxACL = function (token) {
+    var cellName = $("#cell_name").val();
+    return $.ajax({
+        type: "ACL",
+        url: targetRootUrl + cellName + "/__/", // Target Personium URL (can be another Personium server)
+        data: "<?xml version=\"1.0\" encoding=\"utf-8\" ?><D:acl xmlns:p=\"urn:x-personium:xmlns\" xmlns:D=\"DAV:\" xml:base=\"" + rootUrl + cellName + "/__role/__/\"><D:ace><D:principal><D:all/></D:principal><D:grant><D:privilege><p:read/></D:privilege></D:grant></D:ace></D:acl>",
+        headers: {
+            'Accept':'application/json',
+            'Authorization':'Bearer ' + token
+        }
+    });
+};
+
+createQRCodeImg = function(url) {
+    let googleAPI = 'https://chart.googleapis.com/chart?cht=qr&chs=177x177&chl=';
+    let qrURL = googleAPI + url;
+    let aDiv = $('<div>').append(
+        '<br>',
+        $('<img>', {
+            src: qrURL,
+            alt: url,
+            style: 'width: 200px; height: 200px'
+        })
+    );
+    return aDiv;
+};
+
+appendCommonDialog = function() {
+    var html = [
+        '<div id="modal-common" class="modal fade" role="dialog" data-backdrop="static">',
+            '<div class="modal-dialog">',
+                '<div class="modal-content">',
+                    '<div class="modal-header login-header">',
+                        '<h4 class="modal-title"></h4>',
+                    '</div>',
+                    '<div class="modal-body"></div>',
+                    '<div class="modal-footer">',
+                        '<input type="button" class="btn btn-fill btn-warning btn-wd btn-sm" id="b-common-ok" data-i18n="[value]label.ok"></button>',
+                    '</div>',
+               '</div>',
+           '</div>',
+        '</div>'
+    ].join("");
+    $("body").append(html);
+    $('#b-common-ok').on('click', function() { 
+        closeTab();
+    });
+};
+
+openCommonDialog = function(title_key, message_key) {
+    $("#modal-common .modal-title")
+        .attr('data-i18n', title_key);
+
+    $("#modal-common .modal-body")
+        .attr('data-i18n', '[html]' + message_key);
+
+    $("#modal-common")
+        .localize()
+        .modal('show');
+};
+
+/*
+ * clean up data and close tab/window
+ */
+closeTab = function() {
+    // define your own cleanupData for each App/screen
+    if ((typeof cleanUpData !== "undefined") && $.isFunction(cleanUpData)) {
+        cleanUpData();
+    }
+    $("#modal-common .modal-body").empty();
+    $("#modal-common").modal('hide');
+};
+
+cleanUpData = function() {
+    $('#cell_name').val("");
+    $('input:radio[name=cell_type]:first').click();
+    $('form a:first').tab('show');
+}
+
 uploadDefaultProfile = function(token, cellProfileUrl) {
     let tempProfile = _.clone(defaultProfile);
     let cellProfile = $.extend(
         true,
         tempProfile,
         {
-            "CellType": $("#cell_type").val(),
+            "CellType": getSelectedCellType(),
             "DisplayName": $('#DisplayName').val(),
             "Description": $('#Description').val(),
             "Image": _.isEmpty($('#ProfileImageName').val()) ? "" : $('#wizardPicturePreview').attr('src'),
@@ -350,13 +488,4 @@ uploadDefaultProfile = function(token, cellProfileUrl) {
         headers: {'Accept':'application/json',
                   'Authorization':'Bearer ' + token}
     })
-};
-
-getProfile = function(url) {
-    return $.ajax({
-        type: "GET",
-        url: url,
-        dataType: 'json',
-        headers: {'Accept':'application/json'}
-    });
 };

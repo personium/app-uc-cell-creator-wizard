@@ -86,13 +86,13 @@
         }
     },
     "label": {
-        "required": "（必須）"
+        "required": "（必須）",
+        "ok": "OK"
     },
     "resultDialog": {
         "title": "セルの作成"
     },
     "create_form": {
-        "ok_button": "作成",
         "msg": {
             "info": {
                 "cell_created": "セルを作成しました。",
