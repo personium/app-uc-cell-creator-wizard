@@ -9,10 +9,12 @@
                 "label": "Cell名<small data-i18n='label.required'></small>",
                 "placeholder": "作成するセル名を入力",
                 "spec": "先頭英数字+半角英数字、半角アンダーバー、および半角ハイフン(128字以内)",
-                "cell_already_exist": "既に存在します。"
+                "cell_already_exist": "既に存在します。",
+                "confirm_label": "Cell名"
             },
             "cell_type": {
                 "label": "Cell種別",
+                "confirm_label": "$t(wizard_pane.cell_info.cell_type.label)",
                 "options": {
                     "Person": "ヒト",
                     "Organization": "組織",
@@ -32,7 +34,8 @@
                 "name": {
                     "label": "アカウント名<small data-i18n='label.required'></small>",
                     "placeholder": "作成するアカウント名を入力",
-                    "spec":"一部の特殊文字は使用出来ません。"
+                    "spec":"一部の特殊文字は使用出来ません。",
+                    "confirm_label": "アカウント名（$t(wizard_pane.account.admin.description)）"
                 },
                 "password": {
                     "label": "パスワード<small data-i18n='label.required'></small>",
@@ -47,9 +50,10 @@
             "app": {
                 "description": "アプリ ユーザー アカウント",
                 "name": {
-                    "label": "アカウント名",
+                    "label": "アカウント名<small data-i18n='label.required'></small>",
                     "placeholder": "作成するアカウント名を入力",
-                    "spec":"一部の特殊文字は使用出来ません。"
+                    "spec":"一部の特殊文字は使用出来ません。",
+                    "confirm_label": "アカウント名（$t(wizard_pane.account.app.description)）"
                 },
                 "password": {
                     "label": "パスワード",
@@ -96,10 +100,12 @@
         "msg": {
             "info": {
                 "cell_created": "セルを作成しました。",
-                "private_profile_cell_created": "セルの作成に成功しました。プロフィールは非公開です。"
+                "private_profile_cell_created": "セルの作成に成功しました。プロフィールは非公開です。",
+                "app_user_created": "アプリユーザーを作成しました。"
             },
             "error": {
-                "fail_to_create_cell": "セル作成に失敗しました。"
+                "fail_to_create_cell": "セル作成に失敗しました。",
+                "fail_to_create_app_user": "アプリユーザー作成に失敗しました。"
             }
         }
     }

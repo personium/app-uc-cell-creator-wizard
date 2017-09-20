@@ -9,10 +9,12 @@
                 "label": "Cell Name <small data-i18n='label.required'></small>",
                 "placeholder": "Name of the new cell",
                 "spec": "Must be 128 characters or less and start with alphanumeric and the rest contains alphanumeric, underscores or hyphens.",
-                "cell_already_exist": "Cell already exists."
+                "cell_already_exist": "Cell already exists.",
+                "confirm_label": "Cell Name"
             },
             "cell_type": {
                 "label": "Cell Type",
+                "confirm_label": "$t(wizard_pane.cell_info.cell_type.label)",
                 "options": {
                     "Person": "Person",
                     "Organization": "Organization",
@@ -31,8 +33,9 @@
                 "description": "Admin User Account",
                 "name": {
                     "label": "Name <small data-i18n='label.required'></small>",
-                    "placeholder": "Name of the new admin account",
-                    "spec":"Please do not use unsupported symbol(s)."
+                    "placeholder": "Name of the new account",
+                    "spec":"Please do not use unsupported symbol(s).",
+                    "confirm_label": "Name ($t(wizard_pane.account.admin.description))"
                 },
                 "password": {
                     "label": "Password <small data-i18n='label.required'></small>",
@@ -47,9 +50,10 @@
             "app": {
                 "description": "App User Account",
                 "name": {
-                    "label": "Name",
-                    "placeholder": "Name of the new admin account",
-                    "spec":"Please do not use unsupported symbol(s)."
+                    "label": "Name <small data-i18n='label.required'></small>",
+                    "placeholder": "Name of the new account",
+                    "spec":"Please do not use unsupported symbol(s).",
+                    "confirm_label": "Name ($t(wizard_pane.account.app.description))"
                 },
                 "password": {
                     "label": "Password",
@@ -96,10 +100,12 @@
         "msg": {
             "info": {
                 "cell_created": "Cell successfully created.",
-                "private_profile_cell_created": "$t(create_form.msg.info.cell_created) However cell's profile is private."
+                "private_profile_cell_created": "$t(create_form.msg.info.cell_created) However cell's profile is private.",
+                "app_user_created": "App user account is created."
             },
             "error": {
-                "fail_to_create_cell": "Failed to create a cell."
+                "fail_to_create_cell": "Failed to create a cell.",
+                "fail_to_create_app_user": "Failed to created app user account!"
             }
         }
     }

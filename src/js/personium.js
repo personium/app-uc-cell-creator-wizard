@@ -351,25 +351,41 @@ createCell = function () {
             $("#cell_name").val(),
             '/__/profile.json'
         ].join("");
+
         setMainBoxACL(access_token).done(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
         }).fail(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.private_profile_cell_created');
         }).always(function() {
-            $('<input>', {
-                value: $("#cell_name").val(),
-                readonly: true
-            }).appendTo("#modal-common .modal-body");
-
             uploadDefaultProfile(access_token, cellProfileUrl);
 
             if (HomeApplication.enableInstall()) {
                 HomeApplication.installHomeApplicationBox(access_token);
-                $("#modal-common .modal-body").append($(createQRCodeImg(HomeApplication.loginUrl())));
             };
+
+            if (getSelectedCellType() == "App") {
+
+                let appUserInfo = $('<p>', {
+                    style: "word-wrap: break-word;"
+                });
+
+                restCreateAccountAPI(access_token).done(function() {
+                    console.log("Succeeded in created: " + $('#name').val());
+                    appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
+                }).fail(function(data) {
+                    let res = JSON.parse(data.responseText);
+                    console.log("Failed to created: " + $('#name').val());
+                    console.log("An error has occurred.\n" + res.message.value);
+                    appUserInfo.attr('data-i18n', 'create_form.msg.error.fail_to_create_app_user');
+                }).always(function() {
+                    displayCellInfo(appUserInfo);
+                });
+            } else {
+                displayCellInfo();
+            }
         });
     }).fail(function() {
-        //displayFailureMsg(i18next.t("create_form.msg.error.fail_to_create_cell"));
+        openCommonDialog('resultDialog.title', 'create_form.msg.error.fail_to_create_cell');
     });
 };
 
@@ -399,6 +415,111 @@ setMainBoxACL = function (token) {
             'Authorization':'Bearer ' + token
         }
     });
+};
+
+uploadDefaultProfile = function(token, cellProfileUrl) {
+    let tempProfile = _.clone(defaultProfile);
+    let cellProfile = $.extend(
+        true,
+        tempProfile,
+        {
+            "CellType": getSelectedCellType(),
+            "DisplayName": $('#DisplayName').val(),
+            "Description": $('#Description').val(),
+            "Image": _.isEmpty($('#ProfileImageName').val()) ? "" : $('#wizardPicturePreview').attr('src'),
+            "ProfileImageName": $('#ProfileImageName').val()
+        }
+    );
+
+    $.ajax({
+        type: "PUT",
+        url: cellProfileUrl,
+        data: JSON.stringify(cellProfile),
+        headers: {'Accept':'application/json',
+                  'Authorization':'Bearer ' + token}
+    })
+};
+
+restCreateAccountAPI = function(token) {
+    let createAccountRESTURL = [
+        targetRootUrl,
+        $("#cell_name").val(),
+        '/__ctl/Account'
+    ].join("");
+
+    let json = {
+        'Name': $("#name").val()
+    }
+
+    return $.ajax({
+        type: "POST",
+        url: createAccountRESTURL,
+        data: JSON.stringify(json),
+        headers: {
+            'Authorization':'Bearer ' + token, // get from createCell
+            'X-Personium-Credential': $("#password").val()
+        }
+    });
+};
+
+displayCellInfo = function(appUserInfo) {
+    displayCellName();
+
+    displayCellType();
+
+    displayAdminName();
+
+    if ((typeof appUserInfo !== "undefined") && _.isObject(appUserInfo)) {
+        displayAppAccountName(appUserInfo);
+    };
+
+    if (HomeApplication.enableInstall()) {
+        $("#modal-common .modal-body").append($(createQRCodeImg(HomeApplication.loginUrl())));
+    };
+
+    $("#modal-common .modal-body [data-i18n]").localize();
+};
+
+displayCellName = function() {
+    let aLabel = $('<label>', {
+        'data-i18n': '[html]wizard_pane.cell_info.cell_name.confirm_label'
+    });
+    let aP = $('<p>', {
+        style: "word-wrap: break-word;"
+    }).html($("#cell_name").val());
+
+    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP));
+};
+
+displayCellType = function() {
+    let aLabel = $('<label>', {
+        'data-i18n': '[html]wizard_pane.cell_info.cell_type.confirm_label'
+    });
+    let aP = $('<p>', {
+        style: "word-wrap: break-word;"
+    }).html(getSelectedCellType());
+
+    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP));
+};
+
+displayAdminName = function() {
+    let aLabel = $('<label>', {
+        'data-i18n': '[html]wizard_pane.account.admin.name.confirm_label'
+    });
+    let aP = $('<p>', {
+        style: "word-wrap: break-word;"
+    }).html($('#admin_name').val());
+    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP));
+};
+
+displayAppAccountName = function(appUserInfo) {    
+    let aLabel = $('<label>', {
+        'data-i18n': '[html]wizard_pane.account.app.name.confirm_label'
+    });
+    let aP = $('<p>', {
+        style: "word-wrap: break-word;"
+    }).html($('#name').val());
+    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP), $(appUserInfo));
 };
 
 createQRCodeImg = function(url) {
@@ -441,8 +562,10 @@ openCommonDialog = function(title_key, message_key) {
     $("#modal-common .modal-title")
         .attr('data-i18n', title_key);
 
-    $("#modal-common .modal-body")
-        .attr('data-i18n', '[html]' + message_key);
+    let aP = $('<p>', {
+        style: "word-wrap: break-word;",
+        'data-i18n': '[html]' + message_key
+    }).appendTo("#modal-common .modal-body");
 
     $("#modal-common")
         .localize()
@@ -466,26 +589,3 @@ cleanUpData = function() {
     $('input:radio[name=cell_type]:first').click();
     $('form a:first').tab('show');
 }
-
-uploadDefaultProfile = function(token, cellProfileUrl) {
-    let tempProfile = _.clone(defaultProfile);
-    let cellProfile = $.extend(
-        true,
-        tempProfile,
-        {
-            "CellType": getSelectedCellType(),
-            "DisplayName": $('#DisplayName').val(),
-            "Description": $('#Description').val(),
-            "Image": _.isEmpty($('#ProfileImageName').val()) ? "" : $('#wizardPicturePreview').attr('src'),
-            "ProfileImageName": $('#ProfileImageName').val()
-        }
-    );
-
-    $.ajax({
-        type: "PUT",
-        url: cellProfileUrl,
-        data: JSON.stringify(cellProfile),
-        headers: {'Accept':'application/json',
-                  'Authorization':'Bearer ' + token}
-    })
-};
