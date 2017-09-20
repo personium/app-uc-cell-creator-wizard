@@ -481,46 +481,38 @@ displayCellInfo = function(appUserInfo) {
 };
 
 displayCellName = function() {
-    let aLabel = $('<label>', {
-        'data-i18n': '[html]wizard_pane.cell_info.cell_name.confirm_label'
-    });
-    let aP = $('<p>', {
-        style: "word-wrap: break-word;"
-    }).html($("#cell_name").val());
-
-    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP));
+    displayRow('[html]wizard_pane.cell_info.cell_name.confirm_label', $("#cell_name").val());
 };
 
 displayCellType = function() {
-    let aLabel = $('<label>', {
-        'data-i18n': '[html]wizard_pane.cell_info.cell_type.confirm_label'
-    });
-    let aP = $('<p>', {
-        style: "word-wrap: break-word;"
-    }).html(getSelectedCellType());
-
-    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP));
+    displayRow('[html]wizard_pane.cell_info.cell_type.confirm_label', getSelectedCellType());
 };
 
 displayAdminName = function() {
-    let aLabel = $('<label>', {
-        'data-i18n': '[html]wizard_pane.account.admin.name.confirm_label'
-    });
-    let aP = $('<p>', {
-        style: "word-wrap: break-word;"
-    }).html($('#admin_name').val());
-    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP));
+    displayRow('[html]wizard_pane.account.admin.name.confirm_label', $('#admin_name').val());
 };
 
-displayAppAccountName = function(appUserInfo) {    
-    let aLabel = $('<label>', {
-        'data-i18n': '[html]wizard_pane.account.app.name.confirm_label'
-    });
-    let aP = $('<p>', {
-        style: "word-wrap: break-word;"
-    }).html($('#name').val());
-    $("#modal-common .modal-body").append($('<br>'), $(aLabel), $(aP), $(appUserInfo));
+displayAppAccountName = function(appUserInfo) {
+    displayRow('[html]wizard_pane.account.app.name.confirm_label', $('#name').val());
 };
+
+displayRow = function(labelKey, value) {
+    let aDiv = $('<div>', {
+        class: 'row'
+    });
+    let leftDiv = $('<div>', {
+        class: 'col-sm-3 col-sm-offset-1 left',
+        'data-i18n': labelKey
+    });
+    let rightDiv = $('<div>', {
+        class: 'col-sm-7 right',
+        style: 'overflow: hidden;text-overflow: ellipsis;'
+    }).html(value);
+
+    aDiv.append($(leftDiv), $(rightDiv));
+
+    $("#modal-common .modal-body").append($(aDiv));
+}
 
 createQRCodeImg = function(url) {
     let googleAPI = 'https://chart.googleapis.com/chart?cht=qr&chs=177x177&chl=';
@@ -539,7 +531,7 @@ createQRCodeImg = function(url) {
 appendCommonDialog = function() {
     var html = [
         '<div id="modal-common" class="modal fade" role="dialog" data-backdrop="static">',
-            '<div class="modal-dialog">',
+            '<div class="modal-dialog modal-lg">',
                 '<div class="modal-content">',
                     '<div class="modal-header login-header">',
                         '<h4 class="modal-title"></h4>',

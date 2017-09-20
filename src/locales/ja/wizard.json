@@ -35,7 +35,7 @@
                     "label": "アカウント名<small data-i18n='label.required'></small>",
                     "placeholder": "作成するアカウント名を入力",
                     "spec":"一部の特殊文字は使用出来ません。",
-                    "confirm_label": "アカウント名（$t(wizard_pane.account.admin.description)）"
+                    "confirm_label": "アカウント名（Admin）"
                 },
                 "password": {
                     "label": "パスワード<small data-i18n='label.required'></small>",
@@ -53,7 +53,7 @@
                     "label": "アカウント名<small data-i18n='label.required'></small>",
                     "placeholder": "作成するアカウント名を入力",
                     "spec":"一部の特殊文字は使用出来ません。",
-                    "confirm_label": "アカウント名（$t(wizard_pane.account.app.description)）"
+                    "confirm_label": "アカウント名（アプリ）"
                 },
                 "password": {
                     "label": "パスワード",
