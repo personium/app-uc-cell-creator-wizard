@@ -479,6 +479,7 @@ displayCellInfo = function(appUserInfo) {
     };
 
     $("#modal-common .modal-body [data-i18n]").localize();
+    new Clipboard('#modal-common .row .btn');
 };
 
 displayCellName = function() {
@@ -497,10 +498,6 @@ displayAppAccountName = function(appUserInfo) {
     displayRow('[html]wizard_pane.account.app.name.confirm_label', $('#name').val());
 };
 
-displayLoginURL = function(appUserInfo) {
-    displayRow('[html]wizard_pane.cell_info.home_app_url.confirm_label', HomeApplication.loginUrl());
-};
-
 displayRow = function(labelKey, value) {
     let aDiv = $('<div>', {
         class: 'row'
@@ -513,6 +510,39 @@ displayRow = function(labelKey, value) {
         class: 'col-sm-7 right',
         style: 'overflow: hidden;text-overflow: ellipsis;'
     }).html(value);
+
+    aDiv.append($(leftDiv), $(rightDiv));
+
+    $("#modal-common .modal-body").append($(aDiv));
+};
+
+displayLoginURL = function(appUserInfo) {
+    displayRowWithCopyToCliboard('[html]wizard_pane.cell_info.home_app_url.confirm_label', HomeApplication.loginUrl());
+};
+
+displayRowWithCopyToCliboard = function(labelKey, value) {
+    let aDiv = $('<div>', {
+        class: 'row'
+    });
+    let leftDiv = $('<div>', {
+        class: 'col-sm-3 col-sm-offset-1 left',
+        'data-i18n': labelKey
+    });
+    let rightDiv = $('<div>', {
+        class: 'col-sm-7 right'
+    });
+    let aSpan = $('<span>', {
+        id: 'foo',
+        class: 'col-sm-10',
+        style: 'overflow: hidden;text-overflow: ellipsis;'
+    }).html(value);
+    let aBtn = $('<button>', {
+        class: 'btn',
+        'data-clipboard-target': "#foo"
+    }).append($('<i>', {
+        class: "fa fa-clipboard"
+    }));
+    rightDiv.append($(aSpan), $(aBtn));
 
     aDiv.append($(leftDiv), $(rightDiv));
 

@@ -56,7 +56,7 @@
                       <div class="col-sm-10 col-sm-offset-1">
                         <div class="form-group">
                           <label data-i18n="[html]wizard_pane.cell_info.cell_name.label"></label>
-                          <input id="cell_name" name="cell_name" type="text" autocomplete="off" class="form-control" data-i18n="[placeholder]wizard_pane.cell_info.cell_name.placeholder">
+                          <input id="cell_name" name="cell_name" type="text" autocomplete="off" class="form-control" data-i18n="[placeholder]wizard_pane.cell_info.cell_name.placeholder" autofocus>
                           <button id="cell_name_spinner" class="btn btn-sm btn-warning" style="display: none"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Verifying...</button>
                         </div>
                       </div>
@@ -192,6 +192,8 @@
 
   <!--  Plugin for the Wizard -->
   <script src="assets/js/gsdk-bootstrap-wizard.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 
   <!-- Personium -->
   <script src="js/personium.js"></script>
