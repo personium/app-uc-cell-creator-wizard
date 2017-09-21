@@ -25,6 +25,10 @@
                     "Organization": "Data consumer/provider向けのcell",
                     "App": "Personiumアプリ向けのcell"
                 }
+            },
+            "home_app_url": {
+                "confirm_label": "HomeAppログインURL",
+                "qr_code": "QRコード<br/>($t(wizard_pane.cell_info.home_app_url.confirm_label))"
             }
         },
         "account": {

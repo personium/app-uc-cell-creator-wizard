@@ -474,7 +474,8 @@ displayCellInfo = function(appUserInfo) {
     };
 
     if (HomeApplication.enableInstall()) {
-        $("#modal-common .modal-body").append($(createQRCodeImg(HomeApplication.loginUrl())));
+        displayLoginURL();
+        displayQRCode();
     };
 
     $("#modal-common .modal-body [data-i18n]").localize();
@@ -496,6 +497,10 @@ displayAppAccountName = function(appUserInfo) {
     displayRow('[html]wizard_pane.account.app.name.confirm_label', $('#name').val());
 };
 
+displayLoginURL = function(appUserInfo) {
+    displayRow('[html]wizard_pane.cell_info.home_app_url.confirm_label', HomeApplication.loginUrl());
+};
+
 displayRow = function(labelKey, value) {
     let aDiv = $('<div>', {
         class: 'row'
@@ -512,20 +517,37 @@ displayRow = function(labelKey, value) {
     aDiv.append($(leftDiv), $(rightDiv));
 
     $("#modal-common .modal-body").append($(aDiv));
-}
+};
+
+displayQRCode = function() {
+    let aImg = createQRCodeImg(HomeApplication.loginUrl());
+    let aDiv = $('<div>', {
+        class: 'row'
+    });
+    let leftDiv = $('<div>', {
+        class: 'col-sm-3 col-sm-offset-1 left',
+        style: 'height: 202px', // QR Code's height is 200px + 2px border
+        'data-i18n': '[html]wizard_pane.cell_info.home_app_url.qr_code'
+    });
+    let rightDiv = $('<div>', {
+        class: 'col-sm-7 right',
+    }).append($(aImg));
+    
+    aDiv.append($(leftDiv), $(rightDiv));
+
+    $("#modal-common .modal-body").append($(aDiv));
+};
 
 createQRCodeImg = function(url) {
     let googleAPI = 'https://chart.googleapis.com/chart?cht=qr&chs=177x177&chl=';
     let qrURL = googleAPI + url;
-    let aDiv = $('<div>').append(
-        '<br>',
-        $('<img>', {
-            src: qrURL,
-            alt: url,
-            style: 'width: 200px; height: 200px'
-        })
-    );
-    return aDiv;
+    let aImg = $('<img>', {
+        src: qrURL,
+        alt: url,
+        style: 'width: 200px; height: 200px; padding: 1px;'
+    })
+
+    return aImg;
 };
 
 appendCommonDialog = function() {

@@ -25,6 +25,10 @@
                     "Organization": "A cell for data consumer or provider",
                     "App": "A cell for Personium app"
                 }
+            },
+            "home_app_url": {
+                "confirm_label": "HomeApp Login URL",
+                "qr_code": "QR Code<br/>($t(wizard_pane.cell_info.home_app_url.confirm_label))"
             }
         },
         "account": {
