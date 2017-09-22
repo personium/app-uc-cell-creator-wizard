@@ -1,0 +1,82 @@
+.form-group.cell_type {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+.wizard-card .choice i {
+  font-size: 70px;
+}
+
+.choice.cell_type {
+  margin-top: 0px !important;
+}
+
+#app_account .info-text {
+  margin: 40px 0 30px;
+}
+
+textarea {
+  resize: none;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+#modal-common .row > .left {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ffffff;
+  background-color: #D3D3D3;
+}
+
+#modal-common .row > .clipboardBtn,
+#modal-common .row > .right {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ffffff;
+  background-color: #EDEDED;
+}
+
+#modal-common .row:first-of-type .left {
+  border-width: 1px;
+  border-radius: 5px 0px 0px 0px;
+  border-style: solid;
+  border-color: #ffffff;
+  background-color: #D3D3D3;
+}
+
+#modal-common .row:first-of-type .right {
+  border-width: 1px;
+  border-radius: 0px 5px 0px 0px;
+  border-style: solid;
+  border-color: #ffffff;
+  background-color: #EDEDED;
+}
+
+#modal-common .row:last-of-type .left {
+  border-width: 1px;
+  border-radius: 0px 0px 0px 5px;
+  border-style: solid;
+  border-color: #ffffff;
+  background-color: #D3D3D3;
+}
+
+#modal-common .row:last-of-type .right {
+  border-width: 1px;
+  border-radius: 0px 0px 5px 0px;
+  border-style: solid;
+  border-color: #ffffff;
+  background-color: #EDEDED;
+}

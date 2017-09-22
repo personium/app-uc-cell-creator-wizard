@@ -480,6 +480,9 @@ displayCellInfo = function(appUserInfo) {
 
     $("#modal-common .modal-body [data-i18n]").localize();
     new Clipboard('#modal-common .row .btn');
+    $('#modal-common .modal-body [rel="tooltip"]').tooltip({
+        trigger: "hover"
+    });
 };
 
 displayCellName = function() {
@@ -526,25 +529,46 @@ displayRowWithCopyToCliboard = function(labelKey, value) {
     });
     let leftDiv = $('<div>', {
         class: 'col-sm-3 col-sm-offset-1 left',
+        style: 'height: 42px', // button's height is 40px + 2px border
         'data-i18n': labelKey
     });
     let rightDiv = $('<div>', {
-        class: 'col-sm-7 right'
-    });
-    let aSpan = $('<span>', {
         id: 'foo',
-        class: 'col-sm-10',
-        style: 'overflow: hidden;text-overflow: ellipsis;'
+        class: 'col-sm-6 right',
+        style: 'height: 42px;overflow: hidden;text-overflow: ellipsis;'
     }).html(value);
+    let btnDiv = $('<div>', {
+        class: 'col-sm-1 clipboardBtn'
+    });
     let aBtn = $('<button>', {
+        id: 'copy2Clipboard',
         class: 'btn',
+        rel: 'tooltip',
+        'data-i18n': '[title]wizard_pane.buttons.copy2Clipboard.hover;[data-original-title]wizard_pane.buttons.copy2Clipboard.hover',
         'data-clipboard-target': "#foo"
     }).append($('<i>', {
         class: "fa fa-clipboard"
     }));
-    rightDiv.append($(aSpan), $(aBtn));
+    aBtn
+        .click(function(){
+            $(this)
+                .attr('data-i18n', '[title]wizard_pane.buttons.copy2Clipboard.copied;[data-original-title]wizard_pane.buttons.copy2Clipboard.copied')
+                .localize()
+                .tooltip('fixTitle')
+                .tooltip('setContent')
+                .tooltip('show');
+        }).blur(function(){
+            console.log('blur');
+            $(this)
+                .tooltip('hide')
+                .attr('data-i18n', '[title]wizard_pane.buttons.copy2Clipboard.hover;[data-original-title]wizard_pane.buttons.copy2Clipboard.hover')
+                .localize()
+                .tooltip('fixTitle')
+                .tooltip('setContent');
+        });
+    btnDiv.append($(aBtn));
 
-    aDiv.append($(leftDiv), $(rightDiv));
+    aDiv.append($(leftDiv), $(rightDiv), $(btnDiv));
 
     $("#modal-common .modal-body").append($(aDiv));
 };
@@ -631,5 +655,6 @@ closeTab = function() {
 cleanUpData = function() {
     $('#cell_name').val("");
     $('input:radio[name=cell_type]:first').click();
+    $("input[type='password']").val("");
     $('form a:first').tab('show');
 }

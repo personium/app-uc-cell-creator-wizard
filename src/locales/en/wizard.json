@@ -90,7 +90,11 @@
         "buttons": {
             "previous": "Previous",
             "next": "Next",
-            "finish": "Create"
+            "finish": "Create",
+            "copy2Clipboard": {
+                "hover": "Copy to clipboard",
+                "copied": "Copied!"
+            }
         }
     },
     "label": {
