@@ -465,6 +465,8 @@ restCreateAccountAPI = function(token) {
 displayCellInfo = function(appUserInfo) {
     displayCellName();
 
+    displayProfileDisplayName();
+
     displayCellType();
 
     displayAdminName();
@@ -487,6 +489,10 @@ displayCellInfo = function(appUserInfo) {
 
 displayCellName = function() {
     displayRow('[html]wizard_pane.cell_info.cell_name.confirm_label', $("#cell_name").val());
+};
+
+displayProfileDisplayName = function() {
+    displayRow('[html]wizard_pane.profile.DisplayName.confirm_label', $("#DisplayName").val());
 };
 
 displayCellType = function() {
@@ -655,5 +661,12 @@ cleanUpData = function() {
     $('#cell_name').val("");
     $('input:radio[name=cell_type]:first').click();
     $("input[type='password']").val("");
+    cleanUpProfileImageInfo();
     $('form a:first').tab('show');
-}
+};
+
+cleanUpProfileImageInfo = function() {
+    $('#wizardPicturePreview').attr('src', 'assets/img/default-avatar.png');
+    $('#wizard-picture').val('');
+    $('#ProfileImageName').val('');
+};

@@ -74,9 +74,10 @@
             "title": "プロフィール",
             "description": "Cell プロフィール",
             "DisplayName": {
-                "label": "表示名",
+                "label": "表示名<small data-i18n='label.required'></small>",
                 "placeholder": "",
-                "spec": ""
+                "spec": "",
+                "confirm_label": "Cell表示名"
             },
             "Description": {
                 "label": "説明",

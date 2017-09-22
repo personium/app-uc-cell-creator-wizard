@@ -74,9 +74,10 @@
             "title": "Profile",
             "description": "Cell Profile",
             "DisplayName": {
-                "label": "Display Name",
+                "label": "Display Name <small data-i18n='label.required'></small>",
                 "placeholder": "",
-                "spec": ""
+                "spec": "",
+                "confirm_label": "Cell Display Name"
             },
             "Description": {
                 "label": "Description",
