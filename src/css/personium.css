@@ -80,3 +80,7 @@ textarea {
   border-color: #ffffff;
   background-color: #EDEDED;
 }
+
+#modal-common .row i.fa-clipboard {
+  font-size: 15px !important;
+}

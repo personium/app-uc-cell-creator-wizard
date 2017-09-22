@@ -479,7 +479,7 @@ displayCellInfo = function(appUserInfo) {
     };
 
     $("#modal-common .modal-body [data-i18n]").localize();
-    new Clipboard('#modal-common .row .btn');
+    new Clipboard('#modal-common .row i.fa-clipboard');
     $('#modal-common .modal-body [rel="tooltip"]').tooltip({
         trigger: "hover"
     });
@@ -529,26 +529,25 @@ displayRowWithCopyToCliboard = function(labelKey, value) {
     });
     let leftDiv = $('<div>', {
         class: 'col-sm-3 col-sm-offset-1 left',
-        style: 'height: 42px', // button's height is 40px + 2px border
+        style: 'height: 22px', // button's height is 20px + 2px border
         'data-i18n': labelKey
     });
     let rightDiv = $('<div>', {
         id: 'foo',
         class: 'col-sm-6 right',
-        style: 'height: 42px;overflow: hidden;text-overflow: ellipsis;'
+        style: 'height: 22px;overflow: hidden;text-overflow: ellipsis;'
     }).html(value);
     let btnDiv = $('<div>', {
-        class: 'col-sm-1 clipboardBtn'
+        class: 'col-sm-1 text-center clipboardBtn'
     });
-    let aBtn = $('<button>', {
+    let aBtn = $('<i>', {
         id: 'copy2Clipboard',
-        class: 'btn',
+        class: 'fa fa-clipboard',
+        sytle: 'font-size: 15px !important',
         rel: 'tooltip',
         'data-i18n': '[title]wizard_pane.buttons.copy2Clipboard.hover;[data-original-title]wizard_pane.buttons.copy2Clipboard.hover',
         'data-clipboard-target': "#foo"
-    }).append($('<i>', {
-        class: "fa fa-clipboard"
-    }));
+    });
     aBtn
         .click(function(){
             $(this)
@@ -557,8 +556,8 @@ displayRowWithCopyToCliboard = function(labelKey, value) {
                 .tooltip('fixTitle')
                 .tooltip('setContent')
                 .tooltip('show');
-        }).blur(function(){
-            console.log('blur');
+        }).mouseout(function(){
+            console.log('mouseout');
             $(this)
                 .tooltip('hide')
                 .attr('data-i18n', '[title]wizard_pane.buttons.copy2Clipboard.hover;[data-original-title]wizard_pane.buttons.copy2Clipboard.hover')
