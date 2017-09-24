@@ -17,12 +17,12 @@
 /*
  * Replace the "***" with a valid Personium domain name
  */
-var deployedDomainName = "demo.personium.io";
+var deployedDomainName = "***";
 
 /*
  * Replace the "***" with a valid cell name where this service is running.
  */
-var deployedCellName = "dixonsiu";
+var deployedCellName = "***";
 
 
 /* 
@@ -341,6 +341,19 @@ getProfile = function(url) {
         dataType: 'json',
         headers: {'Accept':'application/json'}
     });
+};
+
+demo = function() {
+    openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
+    if (getSelectedCellType() == "App") {
+        let appUserInfo = $('<p>', {
+            style: "word-wrap: break-word;"
+        });
+        appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
+        displayCellInfo(appUserInfo);
+    } else {
+        displayCellInfo();
+    }
 };
 
 createCell = function () {
