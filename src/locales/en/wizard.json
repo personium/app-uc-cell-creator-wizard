@@ -1,5 +1,5 @@
 {
-    "title": "Personal Cell Creator",
+    "title": "Cell Creator",
     "description": "Fill in the necessary information to create a new cell.",
     "wizard_pane": {
         "cell_info": {

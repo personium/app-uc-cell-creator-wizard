@@ -1,11 +1,11 @@
-# Personal Cell Creator Wizard  
-A wizard that makes Peronium cell creation as simple as crossing your fingers!  
+# Cell Creator Wizard  
+A wizard that makes Personium cell creation as simple as crossing your fingers!  
 Just fill in the blanks and a cell will be created with basic configurations.  
 
 Watch the [demo (don't forget to turn on the caption) on youTube](https://www.youtube.com/watch?v=M4cYLFYRyEk&feature=youtu.be).  
 
 # Top Page    
-[![Personal Cell Creator Wizard](doc/cell_creator_wizard.PNG)](https://www.youtube.com/watch?v=M4cYLFYRyEk&feature=youtu.be)  
+[![Cell Creator Wizard](doc/cell_creator_wizard.PNG)](https://www.youtube.com/watch?v=M4cYLFYRyEk&feature=youtu.be)  
 
 # Improved Usability  
 1. Validation  
