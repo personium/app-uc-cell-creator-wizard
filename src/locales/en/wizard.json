@@ -1,4 +1,5 @@
 {
+    "title_demo": "Cell Creator (Demo)",
     "title": "Cell Creator",
     "description": "Fill in the necessary information to create a new cell.",
     "wizard_pane": {
@@ -7,8 +8,8 @@
             "description": "Basic Cell Info",
             "cell_name": {
                 "label": "Cell Name <small data-i18n='label.required'></small>",
-                "placeholder": "Name of the new cell",
-                "spec": "Must be 128 characters or less and start with alphanumeric and the rest contains alphanumeric, underscores or hyphens.",
+                "placeholder": "Name (max. 128 characters) of the new cell",
+                "spec": "Can contain letters, numbers, underscores and hyphens.<br/>Must begin with alphanumeric characters, with a maximum of 128 characters.",
                 "cell_already_exist": "Cell already exists.",
                 "confirm_label": "Cell Name"
             },
@@ -37,14 +38,14 @@
                 "description": "Admin User Account",
                 "name": {
                     "label": "Name <small data-i18n='label.required'></small>",
-                    "placeholder": "Name of the new account",
-                    "spec":"Please do not use unsupported symbol(s).",
+                    "placeholder": "Name (max. 128 characters) of the new account",
+                    "spec":"Can contain letters, numbers and symbols (-_!$*=^`{|}~.@).<br/>Must begin with alphanumeric characters, with a maximum of 128 characters.",
                     "confirm_label": "Name ($t(wizard_pane.account.admin.description))"
                 },
                 "password": {
                     "label": "Password <small data-i18n='label.required'></small>",
-                    "placeholder": "Create a password",
-                    "spec": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens."
+                    "placeholder": "Create a password (6 - 32 characters)",
+                    "spec": "Can contains letters, numbers, underscores and hyphens.<br/>Must contains a minimum of 6 and maximum of 32 characters."
                 },
                 "confirm_password": {
                     "label": "Confrm Password <small data-i18n='label.required'></small>",
@@ -55,14 +56,14 @@
                 "description": "App User Account",
                 "name": {
                     "label": "Name <small data-i18n='label.required'></small>",
-                    "placeholder": "Name of the new account",
-                    "spec":"Please do not use unsupported symbol(s).",
+                    "placeholder": "Name (max. 128 characters) of the new account",
+                    "spec":"Can contain letters, numbers and symbols (-_!$*=^`{|}~.@).<br/>Must begin with alphanumeric characters, with a maximum of 128 characters.",
                     "confirm_label": "Name ($t(wizard_pane.account.app.description))"
                 },
                 "password": {
                     "label": "Password",
-                    "placeholder": "Create a password",
-                    "spec": "Must be 6 - 32 characters and contains alphanumeric, underscores or hyphens."
+                    "placeholder": "Create a password (6 - 32 characters)",
+                    "spec": "Can contains letters, numbers, underscores and hyphens.<br/>Must contains a minimum of 6 and maximum of 32 characters."
                 },
                 "confirm_password": {
                     "label": "Confrm Password",
