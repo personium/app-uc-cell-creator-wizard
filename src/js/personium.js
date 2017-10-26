@@ -275,11 +275,36 @@ configureTarget = function() {
             }
         },
         submitHandler: function(form) {
+            if (isIncomplete()) {
+                return false;
+            }
+            if ((typeof notDemo !== "undefined") && notDemo) {
+                createCell();
+            } else {
+                demo();
+            }
             console.log("submit");
-            createCell();
             return false;
         }
     });
+};
+
+isIncomplete = function () {
+    if (containsEmptyAccountInfo("admin_account") || ((getSelectedCellType() == "App") && containsEmptyAccountInfo("app_account")) || _.isEmpty($("#DisplayName").val())){
+        return true;
+    } else {
+        return false;
+    }
+};
+
+containsEmptyAccountInfo = function (elementName) {
+    let selector = "#" + elementName+ " input";
+    let result = _.some($(selector), function(obj) {
+        let value = $(obj).val();
+        console.log(value);
+        return _.isEmpty(value);
+    });
+    return result;
 };
 
 checkCellExist = function (tab, navigation, nextIndex) {
