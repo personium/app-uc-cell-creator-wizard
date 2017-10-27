@@ -579,7 +579,7 @@ displayRowWithCopyToCliboard = function(labelKey, value) {
     let rightDiv = $('<div>', {
         id: 'foo',
         class: 'col-sm-6 right',
-        style: 'height: 22px;overflow: hidden;text-overflow: ellipsis;'
+        style: 'white-space:nowrap;height: 22px;overflow: hidden;text-overflow: ellipsis;'
     }).html(value);
     let btnDiv = $('<div>', {
         class: 'col-sm-1 text-center clipboardBtn'
