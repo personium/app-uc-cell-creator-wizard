@@ -17,12 +17,12 @@
 /*
  * Replace the "***" with a valid Personium domain name
  */
-var deployedDomainName = "***";
+var deployedDomainName = "demo.personium.io";
 
 /*
  * Replace the "***" with a valid cell name where this service is running.
  */
-var deployedCellName = "***";
+var deployedCellName = "app-uc-cell-creator-wizard";
 
 
 /* 
@@ -35,7 +35,9 @@ var targetRootUrl = rootUrl;
 var serviceCellUrl = [rootUrl, deployedCellName, "/"].join("");
 var createCellApiUrl = [serviceCellUrl, "__/unitService/user_cell_create"].join("");
 var defaultProfileUrl = [serviceCellUrl, "__/defaultProfile.json"].join("");
+var defaultAppProfileUrl = [serviceCellUrl, "__/defaultAppProfile.json"].join("");
 var defaultProfile = {};
+var defaultAppProfile = {};
 var HomeApplication = {
     cellUrl: "https://demo.personium.io/HomeApplication/",
     disabledList: ["App"],
@@ -51,34 +53,55 @@ var HomeApplication = {
     enableInstall: function() {
         return !(_.contains(this.disabledList, getSelectedCellType()));
     },
-    installHomeApplicationBox: function(token) {
-        var oReq = new XMLHttpRequest(); // binary
-        oReq.open("GET", this.barfilePath());
-        oReq.responseType = "arraybuffer";
-        oReq.setRequestHeader("Content-Type", "application/zip");
-        oReq.onload = function(e) {
-            var arrayBuffer = oReq.response;
-            var view = new Uint8Array(arrayBuffer);
-            var blob = new Blob([view], {"type":"application/zip"});
-            $.ajax({
-                type: "MKCOL",
-                url: HomeApplication.targetBoxPath(),
-                data: blob,
-                processData: false,
-                headers: {
-                    'Authorization':'Bearer ' + token, // createCellAPI's token
-                    'Content-type':'application/zip'
-                }
-            }).done(function(data) {
-                // domesomething
-            }).fail(function(data) {
-                var res = JSON.parse(data.responseText);
-                alert("An error has occurred.\n" + res.message.value);
-            });
-        }
-        oReq.send();
+    installBox: function(token) {
+        installBox(token, this);
     }
 };
+
+var CellManager = {
+    cellUrl: "https://demo.personium.io/app-uc-unit-manager/",
+    barfilePath: function() {
+        //return this.cellUrl + '__/dixon_test.bar';
+        return this.cellUrl + '__/CellManager.bar';
+    },
+    targetBoxPath: function() {
+        return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_cell-manager/';
+    },
+    loginUrl: function() {
+        return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_cell-manager/src/login.html';
+    },
+    installBox: function(token) {
+        installBox(token, this);
+    }
+};
+
+installBox = function(token, obj) {
+    var oReq = new XMLHttpRequest(); // binary
+    oReq.open("GET", obj.barfilePath());
+    oReq.responseType = "arraybuffer";
+    oReq.setRequestHeader("Content-Type", "application/zip");
+    oReq.onload = function(e) {
+        var arrayBuffer = oReq.response;
+        var view = new Uint8Array(arrayBuffer);
+        var blob = new Blob([view], {"type":"application/zip"});
+        $.ajax({
+            type: "MKCOL",
+            url: obj.targetBoxPath(),
+            data: blob,
+            processData: false,
+            headers: {
+                'Authorization':'Bearer ' + token, // createCellAPI's token
+                'Content-type':'application/zip'
+            }
+        }).done(function(data) {
+            // domesomething
+        }).fail(function(data) {
+            var res = JSON.parse(data.responseText);
+            alert("An error has occurred.\n" + res.message.value);
+        });
+    }
+    oReq.send();
+}
 
 $(document).ready(function(){
     i18next
@@ -103,7 +126,7 @@ $(document).ready(function(){
             updateContent();
 
             // Initialize profile
-            initializeProfile(defaultProfileUrl);
+            initializeProfile();
 
             // Special routine for reshowing the rendered contents (originally hidden bare HTML)
             $('#loading_spinner').hide();
@@ -352,10 +375,11 @@ getSelectedCellType = function () {
     return $("input[type='radio'][name='cell_type']:checked").val();
 };
 
-initializeProfile = function(defaultProfileUrl) {
-    getProfile(defaultProfileUrl).done(function(profData) {
-        defaultProfile = _.clone(profData);
-        $('#DisplayName').val(profData.DisplayName);
+initializeProfile = function() {
+    $.when(getProfile(defaultProfileUrl), getProfile(defaultAppProfileUrl)).done(function(profData1, profData2) {
+        defaultProfile = _.clone(profData1[0]);
+        defaultAppProfile = _.clone(profData2[0]);
+        $('#DisplayName').val(defaultProfile.DisplayName);
     });
 };
 
@@ -395,11 +419,13 @@ createCell = function () {
         }).fail(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.private_profile_cell_created');
         }).always(function() {
-            uploadDefaultProfile(access_token, cellProfileUrl);
+            uploadCellProfile(access_token, cellProfileUrl);
 
             if (HomeApplication.enableInstall()) {
-                HomeApplication.installHomeApplicationBox(access_token);
+                HomeApplication.installBox(access_token);
             };
+
+            CellManager.installBox(access_token);
 
             if (getSelectedCellType() == "App") {
 
@@ -455,15 +481,33 @@ setMainBoxACL = function (token) {
     });
 };
 
-uploadDefaultProfile = function(token, cellProfileUrl) {
-    let tempProfile = _.clone(defaultProfile);
-    let cellProfile = $.extend(
+uploadCellProfile = function(token, cellProfileUrl) {
+    let cellType = getSelectedCellType();
+    let tempProfile;
+    if (cellType == "App") {
+        tempProfile = _.clone(defaultAppProfile);
+        displayNameInfo = {
+            "en": $('#DisplayName').val(),
+            "ja": $('#DisplayName').val()
+        };
+        descriptionInfo = {
+            "en": $('#Description').val(),
+            "ja": $('#Description').val()
+        }
+    } else {
+        tempProfile = _.clone(defaultProfile);
+
+        displayNameInfo = $('#DisplayName').val();
+        descriptionInfo = $('#Description').val();
+    }
+
+    $.extend(
         true,
         tempProfile,
         {
-            "CellType": getSelectedCellType(),
-            "DisplayName": $('#DisplayName').val(),
-            "Description": $('#Description').val(),
+            "CellType": cellType,
+            "DisplayName": displayNameInfo,
+            "Description": descriptionInfo,
             "Image": _.isEmpty($('#ProfileImageName').val()) ? "" : $('#wizardPicturePreview').attr('src'),
             "ProfileImageName": $('#ProfileImageName').val()
         }
@@ -472,7 +516,7 @@ uploadDefaultProfile = function(token, cellProfileUrl) {
     $.ajax({
         type: "PUT",
         url: cellProfileUrl,
-        data: JSON.stringify(cellProfile),
+        data: JSON.stringify(tempProfile),
         headers: {'Accept':'application/json',
                   'Authorization':'Bearer ' + token}
     })
@@ -514,9 +558,12 @@ displayCellInfo = function(appUserInfo) {
     };
 
     if (HomeApplication.enableInstall()) {
-        displayLoginURL();
-        displayQRCode();
+        displayHomeApplicationLoginURL();
+        displayHomeApplicationQRCode();
     };
+
+    displayCellManagerLoginURL();
+    displayCellManagerQRCode();
 
     $("#modal-common .modal-body [data-i18n]").localize();
     new Clipboard('#modal-common .row i.fa-clipboard');
@@ -563,11 +610,15 @@ displayRow = function(labelKey, value) {
     $("#modal-common .modal-body").append($(aDiv));
 };
 
-displayLoginURL = function(appUserInfo) {
-    displayRowWithCopyToCliboard('[html]wizard_pane.cell_info.home_app_url.confirm_label', HomeApplication.loginUrl());
+displayHomeApplicationLoginURL = function() {
+    displayRowWithCopyToCliboard("homeApp", '[html]wizard_pane.cell_info.home_app_url.confirm_label', HomeApplication.loginUrl());
 };
 
-displayRowWithCopyToCliboard = function(labelKey, value) {
+displayCellManagerLoginURL = function() {
+    displayRowWithCopyToCliboard("cellManager", '[html]wizard_pane.cell_info.cell_manager_url.confirm_label', CellManager.loginUrl());
+};
+
+displayRowWithCopyToCliboard = function(prefix, labelKey, value) {
     let aDiv = $('<div>', {
         class: 'row'
     });
@@ -577,7 +628,7 @@ displayRowWithCopyToCliboard = function(labelKey, value) {
         'data-i18n': labelKey
     });
     let rightDiv = $('<div>', {
-        id: 'foo',
+        id: prefix + 'URL',
         class: 'col-sm-6 right',
         style: 'white-space:nowrap;height: 22px;overflow: hidden;text-overflow: ellipsis;'
     }).html(value);
@@ -585,12 +636,12 @@ displayRowWithCopyToCliboard = function(labelKey, value) {
         class: 'col-sm-1 text-center clipboardBtn'
     });
     let aBtn = $('<i>', {
-        id: 'copy2Clipboard',
+        id: prefix + 'Copy2Clipboard',
         class: 'fa fa-clipboard',
         sytle: 'font-size: 15px !important',
         rel: 'tooltip',
         'data-i18n': '[title]wizard_pane.buttons.copy2Clipboard.hover;[data-original-title]wizard_pane.buttons.copy2Clipboard.hover',
-        'data-clipboard-target': "#foo"
+        'data-clipboard-target': '#' + prefix + 'URL'
     });
     aBtn
         .click(function(){
@@ -616,15 +667,25 @@ displayRowWithCopyToCliboard = function(labelKey, value) {
     $("#modal-common .modal-body").append($(aDiv));
 };
 
-displayQRCode = function() {
-    let aImg = createQRCodeImg(HomeApplication.loginUrl());
+displayHomeApplicationQRCode = function() {
+    let labelStr = '[html]wizard_pane.cell_info.home_app_url.qr_code';
+    displayQRCode(HomeApplication.loginUrl(), labelStr);
+};
+
+displayCellManagerQRCode = function() {
+    let labelStr = '[html]wizard_pane.cell_info.cell_manager_url.qr_code';
+    displayQRCode(CellManager.loginUrl(), labelStr);
+};
+
+displayQRCode = function(url, labelStr) {
+    let aImg = createQRCodeImg(url);
     let aDiv = $('<div>', {
         class: 'row'
     });
     let leftDiv = $('<div>', {
         class: 'col-sm-3 col-sm-offset-1 left',
         style: 'height: 202px', // QR Code's height is 200px + 2px border
-        'data-i18n': '[html]wizard_pane.cell_info.home_app_url.qr_code'
+        'data-i18n': labelStr
     });
     let rightDiv = $('<div>', {
         class: 'col-sm-7 right',

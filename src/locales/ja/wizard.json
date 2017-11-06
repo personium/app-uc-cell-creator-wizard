@@ -30,6 +30,10 @@
             "home_app_url": {
                 "confirm_label": "HomeAppログインURL",
                 "qr_code": "QRコード<br/>($t(wizard_pane.cell_info.home_app_url.confirm_label))"
+            },
+            "cell_manager_url": {
+                "confirm_label": "Cell ManagerログインURL",
+                "qr_code": "QRコード<br/>($t(wizard_pane.cell_info.cell_manager_url.confirm_label))"
             }
         },
         "account": {
