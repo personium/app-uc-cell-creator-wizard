@@ -121,6 +121,7 @@ $(document).ready(function(){
             // define your own additionalCallback for each App/screen
             if ((typeof additionalCallback !== "undefined") && $.isFunction(additionalCallback)) {
                 additionalCallback();
+
             }
 
             updateContent();
@@ -380,6 +381,24 @@ initializeProfile = function() {
         defaultProfile = _.clone(profData1[0]);
         defaultAppProfile = _.clone(profData2[0]);
         $('#DisplayName').val(defaultProfile.DisplayName);
+
+        // Personium click event
+        $(".choice.cell_type").click(function(){
+            let selectedCellType = $(this).find('[type="radio"]').val();
+            let tempName = "";
+            let predefinedNameList = [defaultProfile.DisplayName, defaultAppProfile.DisplayName.en, defaultAppProfile.DisplayName.ja];
+
+            if (!_.contains(predefinedNameList, $('#DisplayName').val())) {
+                console.log("Keeping user's info.");
+                return;
+            }
+            if (selectedCellType == "App") {
+                tempName = defaultAppProfile.DisplayName.en;
+            } else {
+                tempName = defaultProfile.DisplayName;
+            }
+            
+        });
     });
 };
 
