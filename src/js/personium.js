@@ -17,12 +17,12 @@
 /*
  * Replace the "***" with a valid Personium domain name
  */
-var deployedDomainName = "demo.personium.io";
+var deployedDomainName = "***";
 
 /*
  * Replace the "***" with a valid cell name where this service is running.
  */
-var deployedCellName = "app-uc-cell-creator-wizard";
+var deployedCellName = "***";
 
 
 /* 
