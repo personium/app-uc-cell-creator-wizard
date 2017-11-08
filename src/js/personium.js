@@ -397,7 +397,7 @@ initializeProfile = function() {
             } else {
                 tempName = defaultProfile.DisplayName;
             }
-            
+            $('#DisplayName').val(tempName);
         });
     });
 };
