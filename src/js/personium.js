@@ -385,14 +385,14 @@ initializeProfile = function() {
         $(".choice.cell_type").click(function(){
             let selectedCellType = $(this).find('[type="radio"]').val();
             let tempName = "";
-            let predefinedNameList = [defaultProfile.DisplayName, defaultAppProfile.DisplayName.en, defaultAppProfile.DisplayName.ja];
+            let predefinedNameList = [defaultProfile.DisplayName, defaultAppProfile.DisplayName];
 
             if (!_.contains(predefinedNameList, $('#DisplayName').val())) {
                 console.log("Keeping user's info.");
                 return;
             }
             if (selectedCellType == "App") {
-                tempName = defaultAppProfile.DisplayName.en;
+                tempName = defaultAppProfile.DisplayName;
             } else {
                 tempName = defaultProfile.DisplayName;
             }
@@ -814,8 +814,7 @@ closeTab = function() {
 cleanUpData = function() {
     $('#cell_name').val("");
     $('input:radio[name=cell_type]:first').click();
-    $("input[type='password']").val("");
-    $('#DisplayName').val(tempName);
+    $("#admin_account input, #app_account input").val("");
     cleanUpProfileImageInfo();
     $('form a:first').tab('show');
 };
