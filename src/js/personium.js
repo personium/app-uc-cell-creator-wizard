@@ -61,8 +61,7 @@ var HomeApplication = {
 var CellManager = {
     cellUrl: "https://demo.personium.io/app-uc-unit-manager/",
     barfilePath: function() {
-        //return this.cellUrl + '__/dixon_test.bar';
-        return this.cellUrl + '__/CellManager.bar';
+        return this.cellUrl + '__/cell-manager.bar';
     },
     targetBoxPath: function() {
         return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_cell-manager/';
@@ -386,14 +385,14 @@ initializeProfile = function() {
         $(".choice.cell_type").click(function(){
             let selectedCellType = $(this).find('[type="radio"]').val();
             let tempName = "";
-            let predefinedNameList = [defaultProfile.DisplayName, defaultAppProfile.DisplayName.en, defaultAppProfile.DisplayName.ja];
+            let predefinedNameList = [defaultProfile.DisplayName, defaultAppProfile.DisplayName];
 
             if (!_.contains(predefinedNameList, $('#DisplayName').val())) {
                 console.log("Keeping user's info.");
                 return;
             }
             if (selectedCellType == "App") {
-                tempName = defaultAppProfile.DisplayName.en;
+                tempName = defaultAppProfile.DisplayName;
             } else {
                 tempName = defaultProfile.DisplayName;
             }
@@ -432,40 +431,54 @@ createCell = function () {
             $("#cell_name").val(),
             '/__/profile.json'
         ].join("");
+        let rolesJSONUrl = [
+            targetRootUrl,
+            $("#cell_name").val(),
+            '/__/roles.json'
+        ].join("");
+        let relationsJSONUrl = [
+            targetRootUrl,
+            $("#cell_name").val(),
+            '/__/relations.json'
+        ].join("");
 
-        setMainBoxACL(access_token).done(function() {
+        createCollectionAPI(access_token, "locales").done(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
         }).fail(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.private_profile_cell_created');
         }).always(function() {
-            uploadCellProfile(access_token, cellProfileUrl);
+            $.when(uploadCellProfileAPI(access_token, cellProfileUrl), uploadEmptyJSONAPI(access_token, rolesJSONUrl), uploadEmptyJSONAPI(access_token, relationsJSONUrl))
+                .done(function(){
+                    $.when(setCollectionACLAPI(access_token, "locales"), setCollectionACLAPI(access_token, "profile.json"), setCollectionACLAPI(access_token, "roles.json"), setCollectionACLAPI(access_token, "relations.json"))
+                        .done(function(r1, r2, r3, r4) {
+                            if (HomeApplication.enableInstall()) {
+                                HomeApplication.installBox(access_token);
+                            };
 
-            if (HomeApplication.enableInstall()) {
-                HomeApplication.installBox(access_token);
-            };
+                            CellManager.installBox(access_token);
 
-            CellManager.installBox(access_token);
+                            if (getSelectedCellType() == "App") {
 
-            if (getSelectedCellType() == "App") {
+                                let appUserInfo = $('<p>', {
+                                    style: "word-wrap: break-word;"
+                                });
 
-                let appUserInfo = $('<p>', {
-                    style: "word-wrap: break-word;"
+                                restCreateAccountAPI(access_token).done(function() {
+                                    console.log("Succeeded in created: " + $('#name').val());
+                                    appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
+                                }).fail(function(data) {
+                                    let res = JSON.parse(data.responseText);
+                                    console.log("Failed to created: " + $('#name').val());
+                                    console.log("An error has occurred.\n" + res.message.value);
+                                    appUserInfo.attr('data-i18n', 'create_form.msg.error.fail_to_create_app_user');
+                                }).always(function() {
+                                    displayCellInfo(appUserInfo);
+                                });
+                            } else {
+                                displayCellInfo();
+                            }
+                        });
                 });
-
-                restCreateAccountAPI(access_token).done(function() {
-                    console.log("Succeeded in created: " + $('#name').val());
-                    appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
-                }).fail(function(data) {
-                    let res = JSON.parse(data.responseText);
-                    console.log("Failed to created: " + $('#name').val());
-                    console.log("An error has occurred.\n" + res.message.value);
-                    appUserInfo.attr('data-i18n', 'create_form.msg.error.fail_to_create_app_user');
-                }).always(function() {
-                    displayCellInfo(appUserInfo);
-                });
-            } else {
-                displayCellInfo();
-            }
         });
     }).fail(function() {
         openCommonDialog('resultDialog.title', 'create_form.msg.error.fail_to_create_cell');
@@ -487,11 +500,24 @@ createCellAPI = function () {
     });
 };
 
-setMainBoxACL = function (token) {
+createCollectionAPI = function (token, name) {
+    var cellName = $("#cell_name").val();
+    return $.ajax({
+        type: "MKCOL",
+        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
+        data: '<?xml version="1.0" encoding="utf-8"?><D:mkcol xmlns:D="DAV:" xmlns:p="urn:x-personium:xmlns"><D:set><D:prop><D:resourcetype><D:collection/></D:resourcetype></D:prop></D:set></D:mkcol>',
+        headers: {
+            'Accept':'application/json',
+            'Authorization':'Bearer ' + token
+        }
+    })
+}
+
+setCollectionACLAPI = function (token, name) {
     var cellName = $("#cell_name").val();
     return $.ajax({
         type: "ACL",
-        url: targetRootUrl + cellName + "/__/", // Target Personium URL (can be another Personium server)
+        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
         data: "<?xml version=\"1.0\" encoding=\"utf-8\" ?><D:acl xmlns:p=\"urn:x-personium:xmlns\" xmlns:D=\"DAV:\" xml:base=\"" + rootUrl + cellName + "/__role/__/\"><D:ace><D:principal><D:all/></D:principal><D:grant><D:privilege><p:read/></D:privilege></D:grant></D:ace></D:acl>",
         headers: {
             'Accept':'application/json',
@@ -500,7 +526,7 @@ setMainBoxACL = function (token) {
     });
 };
 
-uploadCellProfile = function(token, cellProfileUrl) {
+uploadCellProfileAPI = function(token, cellProfileUrl) {
     let cellType = getSelectedCellType();
     let tempProfile;
     if (cellType == "App") {
@@ -532,10 +558,20 @@ uploadCellProfile = function(token, cellProfileUrl) {
         }
     );
 
-    $.ajax({
+    return $.ajax({
         type: "PUT",
         url: cellProfileUrl,
         data: JSON.stringify(tempProfile),
+        headers: {'Accept':'application/json',
+                  'Authorization':'Bearer ' + token}
+    })
+};
+
+uploadEmptyJSONAPI = function(token, url) {
+    return $.ajax({
+        type: "PUT",
+        url: url,
+        data: JSON.stringify({}),
         headers: {'Accept':'application/json',
                   'Authorization':'Bearer ' + token}
     })
@@ -778,7 +814,7 @@ closeTab = function() {
 cleanUpData = function() {
     $('#cell_name').val("");
     $('input:radio[name=cell_type]:first').click();
-    $("input[type='password']").val("");
+    $("#admin_account input, #app_account input").val("");
     cleanUpProfileImageInfo();
     $('form a:first').tab('show');
 };

@@ -1,7 +1,7 @@
 {
     "CellType":"App",
-    "DisplayName":{"en": "App", "ja": "アプリ"},
-    "Description":{"en": "", "ja": ""},
+    "DisplayName": "App",
+    "Description": "",
     "Image":"",
     "ProfileImageName":""
 }
