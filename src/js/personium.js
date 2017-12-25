@@ -812,7 +812,8 @@ closeTab = function() {
 };
 
 cleanUpData = function() {
-    $('#cell_name').val("");
+    $('#cell_name, #Description').val("");
+    $('#DisplayName').val(defaultProfile.DisplayName);
     $('input:radio[name=cell_type]:first').click();
     $("#admin_account input, #app_account input").val("");
     cleanUpProfileImageInfo();
