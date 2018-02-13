@@ -42,13 +42,13 @@ var HomeApplication = {
     cellUrl: "https://demo.personium.io/HomeApplication/",
     disabledList: ["App"],
     barfilePath: function() {
-        return this.cellUrl + '__/HomeApplication.bar';
+        return this.cellUrl + '__/home.bar';
     },
     targetBoxPath: function() {
-        return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_HomeApplication/';
+        return targetRootUrl + $("#cell_name").val() + '/home/';
     },
     loginUrl: function() {
-        return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_HomeApplication/src/login.html';
+        return targetRootUrl + $("#cell_name").val() + '/home/login.html';
     },
     enableInstall: function() {
         return !(_.contains(this.disabledList, getSelectedCellType()));
