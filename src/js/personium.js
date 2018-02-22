@@ -24,7 +24,6 @@ var deployedDomainName = "***";
  */
 var deployedCellName = "***";
 
-
 /* 
  * Set up necessary URLs for this service.
  * Current setup procedures only support creating a cell within the same Personium server.
@@ -34,6 +33,7 @@ var rootUrl = ["https://", deployedDomainName, "/"].join("");
 var targetRootUrl = rootUrl;
 var serviceCellUrl = [rootUrl, deployedCellName, "/"].join("");
 var createCellApiUrl = [serviceCellUrl, "__/unitService/user_cell_create"].join("");
+var register2DirectoryApiUrl = [serviceCellUrl, "__/unitService/register2Directory"].join("");
 var defaultProfileUrl = [serviceCellUrl, "__/defaultProfile.json"].join("");
 var defaultAppProfileUrl = [serviceCellUrl, "__/defaultAppProfile.json"].join("");
 var defaultProfile = {};
@@ -426,6 +426,11 @@ demo = function() {
 createCell = function () {
     createCellAPI().done(function(data) {
         let access_token = data.access_token;
+        let cellUrl = [
+            targetRootUrl,
+            $("#cell_name").val(),
+            '/'
+        ].join('');
         let cellProfileUrl = [
             targetRootUrl,
             $("#cell_name").val(),
@@ -442,12 +447,16 @@ createCell = function () {
             '/__/relations.json'
         ].join("");
 
+        let tempProfile = createProfileInfo();
+
+        register2DirectoryAPI(cellUrl, tempProfile);
+
         createCollectionAPI(access_token, "locales").done(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
         }).fail(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.private_profile_cell_created');
         }).always(function() {
-            $.when(uploadCellProfileAPI(access_token, cellProfileUrl), uploadEmptyJSONAPI(access_token, rolesJSONUrl), uploadEmptyJSONAPI(access_token, relationsJSONUrl))
+            $.when(uploadCellProfileAPI(access_token, cellProfileUrl, tempProfile), uploadEmptyJSONAPI(access_token, rolesJSONUrl), uploadEmptyJSONAPI(access_token, relationsJSONUrl))
                 .done(function(){
                     $.when(setCollectionACLAPI(access_token, "locales"), setCollectionACLAPI(access_token, "profile.json"), setCollectionACLAPI(access_token, "roles.json"), setCollectionACLAPI(access_token, "relations.json"))
                         .done(function(r1, r2, r3, r4) {
@@ -500,33 +509,7 @@ createCellAPI = function () {
     });
 };
 
-createCollectionAPI = function (token, name) {
-    var cellName = $("#cell_name").val();
-    return $.ajax({
-        type: "MKCOL",
-        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
-        data: '<?xml version="1.0" encoding="utf-8"?><D:mkcol xmlns:D="DAV:" xmlns:p="urn:x-personium:xmlns"><D:set><D:prop><D:resourcetype><D:collection/></D:resourcetype></D:prop></D:set></D:mkcol>',
-        headers: {
-            'Accept':'application/json',
-            'Authorization':'Bearer ' + token
-        }
-    })
-}
-
-setCollectionACLAPI = function (token, name) {
-    var cellName = $("#cell_name").val();
-    return $.ajax({
-        type: "ACL",
-        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
-        data: "<?xml version=\"1.0\" encoding=\"utf-8\" ?><D:acl xmlns:p=\"urn:x-personium:xmlns\" xmlns:D=\"DAV:\" xml:base=\"" + rootUrl + cellName + "/__role/__/\"><D:ace><D:principal><D:all/></D:principal><D:grant><D:privilege><p:read/></D:privilege></D:grant></D:ace></D:acl>",
-        headers: {
-            'Accept':'application/json',
-            'Authorization':'Bearer ' + token
-        }
-    });
-};
-
-uploadCellProfileAPI = function(token, cellProfileUrl) {
+createProfileInfo = function() {
     let cellType = getSelectedCellType();
     let tempProfile;
     if (cellType == "App") {
@@ -558,13 +541,63 @@ uploadCellProfileAPI = function(token, cellProfileUrl) {
         }
     );
 
+    return tempProfile;
+};
+
+register2DirectoryAPI = function (cellUrl, profileInfo) {
+    let entryData = {
+        cellType: profileInfo.CellType,
+        url: cellUrl,
+        alternateName: profileInfo.DisplayName,
+        description: profileInfo.Description
+    };
+
+    return $.ajax({
+        type:"POST",
+        url: register2DirectoryApiUrl, // unitService engine URL (where this service is deployed)
+        data: entryData,
+        headers: {
+            'Accept':'application/json'
+        }
+    });
+};
+
+createCollectionAPI = function (token, name) {
+    var cellName = $("#cell_name").val();
+    return $.ajax({
+        type: "MKCOL",
+        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
+        data: '<?xml version="1.0" encoding="utf-8"?><D:mkcol xmlns:D="DAV:" xmlns:p="urn:x-personium:xmlns"><D:set><D:prop><D:resourcetype><D:collection/></D:resourcetype></D:prop></D:set></D:mkcol>',
+        headers: {
+            'Accept':'application/json',
+            'Authorization':'Bearer ' + token
+        }
+    })
+}
+
+setCollectionACLAPI = function (token, name) {
+    var cellName = $("#cell_name").val();
+    return $.ajax({
+        type: "ACL",
+        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
+        data: "<?xml version=\"1.0\" encoding=\"utf-8\" ?><D:acl xmlns:p=\"urn:x-personium:xmlns\" xmlns:D=\"DAV:\" xml:base=\"" + rootUrl + cellName + "/__role/__/\"><D:ace><D:principal><D:all/></D:principal><D:grant><D:privilege><p:read/></D:privilege></D:grant></D:ace></D:acl>",
+        headers: {
+            'Accept':'application/json',
+            'Authorization':'Bearer ' + token
+        }
+    });
+};
+
+uploadCellProfileAPI = function(token, cellProfileUrl, profileInfo) {
     return $.ajax({
         type: "PUT",
         url: cellProfileUrl,
-        data: JSON.stringify(tempProfile),
-        headers: {'Accept':'application/json',
-                  'Authorization':'Bearer ' + token}
-    })
+        data: JSON.stringify(profileInfo),
+        headers: {
+            'Accept':'application/json',
+            'Authorization':'Bearer ' + token
+        }
+    });
 };
 
 uploadEmptyJSONAPI = function(token, url) {
