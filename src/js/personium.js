@@ -449,8 +449,6 @@ createCell = function () {
 
         let tempProfile = createProfileInfo();
 
-        register2DirectoryAPI(cellUrl, tempProfile);
-
         createCollectionAPI(access_token, "locales").done(function() {
             openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
         }).fail(function() {
@@ -460,6 +458,8 @@ createCell = function () {
                 .done(function(){
                     $.when(setCollectionACLAPI(access_token, "locales"), setCollectionACLAPI(access_token, "profile.json"), setCollectionACLAPI(access_token, "roles.json"), setCollectionACLAPI(access_token, "relations.json"))
                         .done(function(r1, r2, r3, r4) {
+                            register2DirectoryAPI(cellUrl);
+                            
                             if (HomeApplication.enableInstall()) {
                                 HomeApplication.installBox(access_token);
                             };
@@ -544,18 +544,13 @@ createProfileInfo = function() {
     return tempProfile;
 };
 
-register2DirectoryAPI = function (cellUrl, profileInfo) {
-    let entryData = {
-        cellType: profileInfo.CellType,
-        url: cellUrl,
-        alternateName: profileInfo.DisplayName,
-        description: profileInfo.Description
-    };
-
+register2DirectoryAPI = function (cellUrl) {
     return $.ajax({
         type:"POST",
         url: register2DirectoryApiUrl, // unitService engine URL (where this service is deployed)
-        data: entryData,
+        data: {
+            url: cellUrl
+        },
         headers: {
             'Accept':'application/json'
         }
