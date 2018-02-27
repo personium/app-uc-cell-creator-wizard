@@ -122,5 +122,6 @@
                 "fail_to_create_app_user": "Failed to created app user account!"
             }
         }
-    }
+    },
+    "Cancel": "Cancel"
 }
