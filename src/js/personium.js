@@ -859,6 +859,7 @@ cleanUpData = function() {
 
 cleanUpProfileImageInfo = function() {
     $('#wizardPicturePreview').attr('src', 'assets/img/default-avatar.png');
+    $("#wizardPicturePreview").data("attached", false);
     $('#wizard-picture').val('');
     $('#ProfileImageName').val('');
 };
