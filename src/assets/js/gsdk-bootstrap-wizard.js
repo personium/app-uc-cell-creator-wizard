@@ -124,7 +124,9 @@ additionalCallback = function() {
 
 
     // Prepare the preview for profile picture
-    $("#wizard-picture").change(function(){
+    $("#wizard-picture").click(function() {
+        clearInput(this);
+    }).change(function(){
         readURL(this);
     });
 
@@ -147,6 +149,9 @@ additionalCallback = function() {
     });
 
     $('.set-full-height').css('height', 'auto');
+
+    // Create Cropper Modal
+    ut.createCropperModal({ dispCircleMaskBool: true });
 };
 
 //Function to show image before upload
@@ -157,10 +162,27 @@ function readURL(input) {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            $('#wizardPicturePreview').attr('src', e.target.result).fadeIn('slow');
+            // Set images in cropper modal
+            ut.setCropperModalImage(e.target.result);
+            // Set functions in cropper modal ok button
+            let okFunc = function () {
+                let cropImg = ut.getCroppedModalImage();
+                $('#wizardPicturePreview').attr('src', cropImg).fadeIn('slow');
+                $("#wizardPicturePreview").data("attached", true)
+            }
+            ut.setCropperModalOkBtnFunc(okFunc);
+            
+            // Remove focus from input
+            document.activeElement.blur()
+
+            // Start cropper modal
+            ut.showCropperModal();
         }
         reader.readAsDataURL(input.files[0]);
     }
+}
+function clearInput(input) {
+    input.value = null;
 }
 
 $(window).resize(function(){

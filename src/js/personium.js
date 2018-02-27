@@ -344,6 +344,10 @@ checkCellExist = function (tab, navigation, nextIndex) {
                 $('#app_account').hide();
             }
             navigation.find('li:has([data-toggle="tab"])' + ':eq('+nextIndex+') a').tab('show');
+            if (!$("#wizardPicturePreview").data("attached")) {
+                var cellImgDef = ut.getJdenticon(targetRootUrl + cellName + "/");
+                $("#wizardPicturePreview").attr("src", cellImgDef);
+            }
         }).always(function(){
             $('#cell_name_spinner').hide();
         });
