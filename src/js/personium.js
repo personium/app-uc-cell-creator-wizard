@@ -518,19 +518,8 @@ createProfileInfo = function() {
     let tempProfile;
     if (cellType == "App") {
         tempProfile = _.clone(defaultAppProfile);
-        displayNameInfo = {
-            "en": $('#DisplayName').val(),
-            "ja": $('#DisplayName').val()
-        };
-        descriptionInfo = {
-            "en": $('#Description').val(),
-            "ja": $('#Description').val()
-        }
     } else {
         tempProfile = _.clone(defaultProfile);
-
-        displayNameInfo = $('#DisplayName').val();
-        descriptionInfo = $('#Description').val();
     }
 
     $.extend(
@@ -538,8 +527,8 @@ createProfileInfo = function() {
         tempProfile,
         {
             "CellType": cellType,
-            "DisplayName": displayNameInfo,
-            "Description": descriptionInfo,
+            "DisplayName": $('#DisplayName').val(),
+            "Description": $('#Description').val(),
             "Image": _.isEmpty($('#ProfileImageName').val()) ? "" : $('#wizardPicturePreview').attr('src'),
             "ProfileImageName": $('#ProfileImageName').val()
         }
