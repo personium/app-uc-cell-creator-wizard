@@ -194,29 +194,29 @@ setMessagesLanguage = function(lang) {
 setMessagesLanguage_ja = function() {
     /*
      * Translated default messages for the jQuery validation plugin.
-     * Locale: JA (Japanese; “ú–{Œê)
+     * Locale: JA (Japanese; æ—¥æœ¬èª)
      */
     $.extend(
         $.validator.messages,
         {
-            required: "‚±‚ÌƒtƒB[ƒ‹ƒh‚Í•K{‚Å‚·B",
-            remote: "‚±‚ÌƒtƒB[ƒ‹ƒh‚ğC³‚µ‚Ä‚­‚¾‚³‚¢B",
-            email: "—LŒø‚ÈEƒ[ƒ‹ƒAƒhƒŒƒX‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            url: "—LŒø‚ÈURL‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            date: "—LŒø‚È“ú•t‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            dateISO: "—LŒø‚È“ú•tiISOj‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            number: "—LŒø‚È”š‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            digits: "”š‚Ì‚İ‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            creditcard: "—LŒø‚ÈƒNƒŒƒWƒbƒgƒJ[ƒh”Ô†‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            equalTo: "“¯‚¶’l‚ğ‚à‚¤ˆê“x“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            extension: "—LŒø‚ÈŠg’£q‚ğŠÜ‚Ş’l‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B",
-            maxlength: $.validator.format( "{0} •¶šˆÈ“à‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" ),
-            minlength: $.validator.format( "{0} •¶šˆÈã‚Å“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" ),
-            rangelength: $.validator.format( "{0} •¶š‚©‚ç {1} •¶š‚Ü‚Å‚Ì’l‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" ),
-            range: $.validator.format( "{0} ‚©‚ç {1} ‚Ü‚Å‚Ì’l‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" ),
-            step: $.validator.format( "{0} ‚Ì”{”‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" ),
-            max: $.validator.format( "{0} ˆÈ‰º‚Ì’l‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" ),
-            min: $.validator.format( "{0} ˆÈã‚Ì’l‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B" ),
+            required: "ã“ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¯å¿…é ˆã§ã™ã€‚",
+            remote: "ã“ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ä¿®æ­£ã—ã¦ãã ã•ã„ã€‚",
+            email: "æœ‰åŠ¹ãªEãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            url: "æœ‰åŠ¹ãªURLã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            date: "æœ‰åŠ¹ãªæ—¥ä»˜ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            dateISO: "æœ‰åŠ¹ãªæ—¥ä»˜ï¼ˆISOï¼‰ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            number: "æœ‰åŠ¹ãªæ•°å­—ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            digits: "æ•°å­—ã®ã¿ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            creditcard: "æœ‰åŠ¹ãªã‚¯ãƒ¬ã‚¸ãƒƒãƒˆã‚«ãƒ¼ãƒ‰ç•ªå·ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            equalTo: "åŒã˜å€¤ã‚’ã‚‚ã†ä¸€åº¦å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            extension: "æœ‰åŠ¹ãªæ‹¡å¼µå­ã‚’å«ã‚€å€¤ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚",
+            maxlength: $.validator.format( "{0} æ–‡å­—ä»¥å†…ã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" ),
+            minlength: $.validator.format( "{0} æ–‡å­—ä»¥ä¸Šã§å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" ),
+            rangelength: $.validator.format( "{0} æ–‡å­—ã‹ã‚‰ {1} æ–‡å­—ã¾ã§ã®å€¤ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" ),
+            range: $.validator.format( "{0} ã‹ã‚‰ {1} ã¾ã§ã®å€¤ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" ),
+            step: $.validator.format( "{0} ã®å€æ•°ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" ),
+            max: $.validator.format( "{0} ä»¥ä¸‹ã®å€¤ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" ),
+            min: $.validator.format( "{0} ä»¥ä¸Šã®å€¤ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚" ),
             cellName: i18next.t("wizard_pane.cell_info.cell_name.spec"),
             adminName: i18next.t("wizard_pane.account.admin.name.spec"),
             adminPassword: i18next.t("wizard_pane.account.admin.password.spec")
@@ -518,19 +518,8 @@ createProfileInfo = function() {
     let tempProfile;
     if (cellType == "App") {
         tempProfile = _.clone(defaultAppProfile);
-        displayNameInfo = {
-            "en": $('#DisplayName').val(),
-            "ja": $('#DisplayName').val()
-        };
-        descriptionInfo = {
-            "en": $('#Description').val(),
-            "ja": $('#Description').val()
-        }
     } else {
         tempProfile = _.clone(defaultProfile);
-
-        displayNameInfo = $('#DisplayName').val();
-        descriptionInfo = $('#Description').val();
     }
 
     $.extend(
@@ -538,8 +527,8 @@ createProfileInfo = function() {
         tempProfile,
         {
             "CellType": cellType,
-            "DisplayName": displayNameInfo,
-            "Description": descriptionInfo,
+            "DisplayName": $('#DisplayName').val(),
+            "Description": $('#Description').val(),
             "Image": _.isEmpty($('#ProfileImageName').val()) ? "" : $('#wizardPicturePreview').attr('src'),
             "ProfileImageName": $('#ProfileImageName').val()
         }
