@@ -1,4 +1,52 @@
 function(request){
+    var getUnitAdminInfo = function(request) {
+        /*
+         * Replace the "***" with the target Personium Unit URL (with ending slash)
+         * e.g. 'https://demo.personium.io/'
+         */
+        var targetUnitUrl = '***';
+
+        /*
+        * Replace the "***" with a valid Unit Admin cell name of the target Personium Unit.
+        */
+        var targetUnitAdminCellName = '***';
+
+        /*
+        * Replace the "***" with a valid Unit Admin account name of the target Personium Unit.
+        */
+        var targetUnitAdminAccountName = '***';
+
+        /*
+        * Replace the "***" with a valid Unit Admin account password of the target Personium Unit.
+        */
+        var targetUnitAdminAccountPassword = '***';
+
+        var baseUrl = request.headers['x-baseurl'];
+        var unitUrl = (targetUnitUrl == '***') ? baseUrl : targetUnitUrl;
+    
+        return {
+            unitUrl: unitUrl,
+            cellUrl: unitUrl + targetUnitAdminCellName + '/',
+            accountName: targetUnitAdminAccountName,
+            accountPass: targetUnitAdminAccountPassword
+        }
+    }
+
+    var getUrlInfo = function(request) {
+        var baseUrl = request.headers['x-baseurl'];
+        var forwardedPath = request.headers['x-forwarded-path'];
+        var cellName = forwardedPath.split('/').splice(1)[0];
+        var boxName = forwardedPath.split('/').splice(1)[1];
+        var urlInfo = {
+            unitUrl: baseUrl,
+            cellUrl: baseUrl + cellName + '/',
+            cellName: cellName,
+            boxName: boxName
+        };
+
+        return urlInfo;
+    }
+
     var bodyAsString = request["input"].readAll();
     if (bodyAsString === "") {
         var tempBody = {
@@ -11,31 +59,17 @@ function(request){
         return createResponse(400, tempBody);
     }
     var params = _p.util.queryParse(bodyAsString);
+    var urlInfo = getUrlInfo(request);
+    var unitAdminInfo = getUnitAdminInfo(request);
     var cellName = params.cellName;
     var accountName = params.accName;
     var accountPass = params.accPass;
 
     /*
-    * Replace the "***" with a valid Unit Admin cell name of the target Personium Unit.
-    */
-    var targetUnitAdminCellName = "***";
-
-    /*
-    * Replace the "***" with a valid Unit Admin account name of the target Personium Unit.
-    */
-    var targetUnitAdminAccountName = "***";
-
-    /*
-    * Replace the "***" with a valid Unit Admin account password of the target Personium Unit.
-    */
-    var targetUnitAdminAccountPassword = "***";
-
-    /* 
     * Set up necessary URLs for this service.
     * Current setup procedures only support creating a cell within the same Personium server.
     */
-    var rootUrl = pjvm.getBaseUrl();
-    var targetRootUrl = rootUrl;
+    var targetUnitUrl = unitAdminInfo.unitUrl;
 
     //return testdata();
 
@@ -43,14 +77,14 @@ function(request){
     var httpCode;
 
     // ********Get Token********
-    var urlT = [targetRootUrl, targetUnitAdminCellName, "/__token"].join("");
+    var urlT = [unitAdminInfo.cellUrl, '__token'].join('');
     var headersT = {}
     var contentTypeT = "application/x-www-form-urlencoded";
     var bodyT = [
         "grant_type=password",
-        "&username=", targetUnitAdminAccountName,
-        "&password=", targetUnitAdminAccountPassword,
-        "&p_target=" + targetRootUrl].join("");
+        "&username=", unitAdminInfo.accountName,
+        "&password=", unitAdminInfo.accountPass,
+        "&p_target=" + targetUnitUrl].join("");
 
     // エンドポイントへのPOST
     try {
@@ -67,7 +101,7 @@ function(request){
     // ************************
 
     // ********Create cell********
-    var urlC = targetRootUrl + "__ctl/Cell";
+    var urlC = targetUnitUrl + "__ctl/Cell";
     var headersC = {
       "Authorization":"Bearer " + token
     }
@@ -86,7 +120,7 @@ function(request){
     }
 
     // ********Create admin account********
-    var urlA = targetRootUrl + cellName + "/__ctl/Account";
+    var urlA = targetUnitUrl + cellName + "/__ctl/Account";
     var headersA = {
         "Authorization":"Bearer " + token,
         "X-Personium-Credential": accountPass
@@ -130,6 +164,92 @@ function(request){
             'ace': [{'role':cell.ctl.role.retrieve(roleJson), 'privilege':['root']}]
         };
 
+        cell.acl.set(param);
+        // ********************************************
+
+        // ********Get the token of the created cell********
+        var accJson = {
+            cellUrl: cellName,
+            userId: accountName,
+            password: accountPass
+        };
+        var createCell = _p.as(accJson).cell();
+        var cellToken = createCell.getToken();
+        // *************************************************
+    } catch (e) {
+        return createErrorResponse500(e);
+    }
+
+    return createResponse(201, cellToken);
+};
+
+function createSuccessResponse(tempBody) {
+    return createResponse(200, tempBody);
+}
+
+function createErrorResponse500(tempBody) {
+    return createResponse(500, tempBody);
+}
+
+function createResponse(tempCode, tempBody) {
+    var isString = typeof tempBody == "string";
+    var tempHeaders = isString ? {"Content-Type":"text/plain"} : {"Content-Type":"application/json"};
+    return {
+        status: tempCode,
+        headers: tempHeaders,
+        body: [isString ? tempBody : JSON.stringify(tempBody)]
+    };
+}
+
+// hotfix
+_p.AclManager.prototype.get = function() {
+
+    try {
+        var obj = this.core.get();
+        var acl = {};
+        acl["base"] = obj.base + "";
+        acl["requireSchemaAuthz"] = obj.getRequireSchemaAuthz() + "";
+
+        var aces = obj.aceList;
+        for (var i = 0; i < aces.length; i++) {
+            var principalObj = aces[i].getPrincipal();
+            var roleName;
+            if (principalObj instanceof Packages.io.personium.client.Role) {
+                // Only Role class have getName method
+                roleName = principalObj.getName();
+            } else {
+                switch(principalObj) {
+                case Packages.io.personium.client.Principal.ALL:
+                    roleName = '_ALL';
+                    break;
+                case Packages.io.personium.client.Principal.AUTHENTICATED:
+                    roleName = '_AUTHENTICATED';
+                    break;
+                case Packages.io.personium.client.Principal.UNAUTHENTICATED:
+                    roleName = '_UNAUTHENTICATED';
+                    break;
+                default:
+                    throw new _p.PersoniumException("Parameter Invalid");
+                }
+            }
+            var ace = {};
+            ace["role"] = roleName + "";
+            var privilegeList = aces[i].privilegeList;
+            var privilege = new Array(privilegeList.length);
+            for (j = 0; j < privilegeList.length; j++) {
+                privilege[j] = privilegeList[j] + "";
+            }
+            ace["privilege"] = privilege;
+            aces[i] = ace;
+        }
+        acl["ace"] = aces;
+        return acl;
+    } catch (e) {
+        throw new _p.PersoniumException(e.message);
+    }
+};
+_p.AclManager.prototype.set = function(param) {
+    try {
         var acl = new Packages.io.personium.client.Acl();
 
         if (param["requireSchemaAuthz"] !== null
@@ -156,49 +276,10 @@ function(request){
                 }
             }
         }
-        cell.core.acl.set(acl);
-        // ********************************************
-
-        // ********Get the token of the created cell********
-        var accJson = {
-            cellUrl: cellName,
-            userId: accountName,
-            password: accountPass
-        };
-        var createCell = _p.as(accJson).cell();
-        var cellToken = createCell.getToken();
-        // *************************************************
+        this.core.set(acl);
+        // cell.core.acl.set(acl); NG
+        // cell.acl.core.set(acl);
     } catch (e) {
-        return createErrorResponse500(e);
+        throw new _p.PersoniumException(e.message);
     }
-
-    return createSuccessResponse(cellToken);
 };
-
-function testdata() {
-    var tempBody = {
-        baseUrl : pjvm.getBaseUrl(),
-        cellName: pjvm.getCellName(),
-        boxSchema: pjvm.getBoxSchema(),
-        boxName: pjvm.getBoxName()
-    };
-    
-    return createSuccessResponse(tempBody);
-}
-
-function createSuccessResponse(tempBody) {
-    return createResponse(200, tempBody);
-}
-
-function createErrorResponse500(tempBody) {
-    return createResponse(500, tempBody);
-}
-
-function createResponse(tempCode, tempBody) {
-    var isString = typeof tempBody == "string";
-    return {
-        status: tempCode,
-        headers: {"Content-Type":"application/json"},
-        body: [isString ? tempBody : JSON.stringify(tempBody)]
-    };
-}
