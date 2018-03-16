@@ -76,28 +76,15 @@ function(request){
     var httpClient = new _p.extension.HttpClient();
     var httpCode;
 
-    // ********Get Token********
-    var urlT = [unitAdminInfo.cellUrl, '__token'].join('');
-    var headersT = {}
-    var contentTypeT = "application/x-www-form-urlencoded";
-    var bodyT = [
-        "grant_type=password",
-        "&username=", unitAdminInfo.accountName,
-        "&password=", unitAdminInfo.accountPass,
-        "&p_target=" + targetUnitUrl].join("");
+    // ********Get Unit Admin's Token********
+    var accJson = {
+        cellUrl: unitAdminInfo.cellUrl, // Cell URL or Cell name
+        userId: unitAdminInfo.accountName,
+        password: unitAdminInfo.accountPass
 
-    // エンドポイントへのPOST
-    try {
-        var apiRes = httpClient.post(urlT, headersT, contentTypeT, bodyT);
-    } catch(e) {
-        return createErrorResponse500(e);
-    }
-    httpCode = parseInt(apiRes.status);
-    if (httpCode !== 200) {
-        return createResponse(httpCode, apiRes.body);
-    }
-    var tokenJson = JSON.parse(apiRes.body);
-    var token = tokenJson.access_token;
+    };
+    var unitAdminToken = _p.as(accJson).cell(targetUnitUrl).getToken();
+    var token = unitAdminToken.access_token;
     // ************************
 
     // ********Create cell********
