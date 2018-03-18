@@ -70,9 +70,6 @@ function(request){
     * Current setup procedures only support creating a cell within the same Personium server.
     */
     var targetUnitUrl = unitAdminInfo.unitUrl;
-
-    //return testdata();
-
     var httpClient = new _p.extension.HttpClient();
     var httpCode;
 
@@ -83,48 +80,16 @@ function(request){
         password: unitAdminInfo.accountPass
 
     };
-    var unitAdminToken = _p.as(accJson).cell(targetUnitUrl).getToken();
-    var token = unitAdminToken.access_token;
-    // ************************
+    var accessor = _p.as(accJson);
+    var unit = accessor.unit(targetUnitUrl);
+    var token = unit.getToken().access_token;
 
-    // ********Create cell********
-    var urlC = targetUnitUrl + "__ctl/Cell";
-    var headersC = {
-      "Authorization":"Bearer " + token
-    }
-    var contentTypeC = "application/json";
-    var bodyC = "{\"Name\": \"" + cellName + "\"}";
-
-    // エンドポイントへのPOST
-    try {
-        apiRes = httpClient.post(urlC, headersC, contentTypeC, bodyC);
-    } catch(e) {
-        return createErrorResponse500(e);
-    }
-    httpCode = parseInt(apiRes.status);
-    if (httpCode !== 201) {
-        return createResponse(httpCode, apiRes.body);
-    }
+    // ********Create Cell********
+    var cell = unit.ctl.cell.create({Name:cellName});
 
     // ********Create admin account********
-    var urlA = targetUnitUrl + cellName + "/__ctl/Account";
-    var headersA = {
-        "Authorization":"Bearer " + token,
-        "X-Personium-Credential": accountPass
-    };
-    var contentTypeA = "application/json";
-    var bodyA = "{\"Name\": \"" + accountName + "\"}";
-
-    try {
-        apiRes = httpClient.post(urlA, headersA, contentTypeA, bodyA);
-    } catch(e) {
-        return createErrorResponse500(e);
-    }
-    httpCode = parseInt(apiRes.status);
-    if (httpCode !== 201) {
-        return createResponse(httpCode, apiRes.body);
-    }
-    // ******************************
+    var user = {"Name": accountName};
+    cell.ctl.account.create(user, accountPass);
 
     try {
         // ********Get created cell********
@@ -188,7 +153,40 @@ function createResponse(tempCode, tempBody) {
     };
 }
 
-// hotfix
+// hotfix - to be delete when the Personium Unit is upgraded to the latest personium-engine version that support the followings.
+_p.Accessor.prototype.unit = function(unitUrl) {
+    // Upgrade to Unit Admin User
+    var token = this.cell(unitUrl).getToken();
+    var accessor = _p.as({accessToken: token.access_token});
+
+    var unitObj = new Packages.io.personium.client.UnitManager(accessor.core);
+    var unit = new _p.UnitManager(unitObj);        
+    unit.token = token;
+
+    return unit;
+};
+
+_p.UnitManager.prototype.getToken = function() {
+    return this.token;
+};
+
+_p.AccountManager.prototype.create = function(user, pass) {
+    var obj;
+    try {
+        pjvm.setDefaultHeader('X-Personium-Credential', pass); // hack - to be deleted when personium-client-java is fixed
+        
+        obj = this.core.create(_p.util.obj2javaJson(user), pass);
+        
+        pjvm.setDefaultHeader('X-Personium-Credential', null); // hack - to be deleted when personium-client-java is fixed
+        
+        var account = new _p.Account(obj);
+        account.name = obj.getName() + "";
+        return account;
+    } catch (e) {
+        throw new _p.PersoniumException(e.message);
+    }
+};
+
 _p.AclManager.prototype.get = function() {
 
     try {
@@ -264,8 +262,6 @@ _p.AclManager.prototype.set = function(param) {
             }
         }
         this.core.set(acl);
-        // cell.core.acl.set(acl); NG
-        // cell.acl.core.set(acl);
     } catch (e) {
         throw new _p.PersoniumException(e.message);
     }
