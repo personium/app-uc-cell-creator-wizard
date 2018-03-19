@@ -82,14 +82,14 @@ function(request){
     var unit = accessor.unit(targetUnitUrl);
     var token = unit.getToken().access_token;
 
-    // ********Create Cell********
-    var cell = unit.ctl.cell.create({Name:cellName});
-
-    // ********Create admin account********
-    var user = {"Name": accountName};
-    cell.ctl.account.create(user, accountPass);
-
     try {
+        // ********Create Cell********
+        var cell = unit.ctl.cell.create({Name:cellName});
+
+        // ********Create admin account********
+        var user = {"Name": accountName};
+        cell.ctl.account.create(user, accountPass);
+    
         // ********Get created cell********
         var cell = _p.as({accessToken: token}).cell(cellName);
         // ********************************
@@ -166,84 +166,4 @@ _p.Accessor.prototype.unit = function(unitUrl) {
 
 _p.UnitManager.prototype.getToken = function() {
     return this.token;
-};
-
-_p.AclManager.prototype.get = function() {
-
-    try {
-        var obj = this.core.get();
-        var acl = {};
-        acl["base"] = obj.base + "";
-        acl["requireSchemaAuthz"] = obj.getRequireSchemaAuthz() + "";
-
-        var aces = obj.aceList;
-        for (var i = 0; i < aces.length; i++) {
-            var principalObj = aces[i].getPrincipal();
-            var roleName;
-            if (principalObj instanceof Packages.io.personium.client.Role) {
-                // Only Role class have getName method
-                roleName = principalObj.getName();
-            } else {
-                switch(principalObj) {
-                case Packages.io.personium.client.Principal.ALL:
-                    roleName = '_ALL';
-                    break;
-                case Packages.io.personium.client.Principal.AUTHENTICATED:
-                    roleName = '_AUTHENTICATED';
-                    break;
-                case Packages.io.personium.client.Principal.UNAUTHENTICATED:
-                    roleName = '_UNAUTHENTICATED';
-                    break;
-                default:
-                    throw new _p.PersoniumException("Parameter Invalid");
-                }
-            }
-            var ace = {};
-            ace["role"] = roleName + "";
-            var privilegeList = aces[i].privilegeList;
-            var privilege = new Array(privilegeList.length);
-            for (j = 0; j < privilegeList.length; j++) {
-                privilege[j] = privilegeList[j] + "";
-            }
-            ace["privilege"] = privilege;
-            aces[i] = ace;
-        }
-        acl["ace"] = aces;
-        return acl;
-    } catch (e) {
-        throw new _p.PersoniumException(e.message);
-    }
-};
-_p.AclManager.prototype.set = function(param) {
-    try {
-        var acl = new Packages.io.personium.client.Acl();
-
-        if (param["requireSchemaAuthz"] !== null
-        && typeof param["requireSchemaAuthz"] !== "undefined"
-        && (param["requireSchemaAuthz"] !== "")) {
-            acl.setRequireSchemaAuthz(param["requireSchemaAuthz"]);
-        }
-        var aces = param["ace"];
-
-        if (aces != null) {
-            for (var i = 0; i < aces.length; i++) {
-                aceObj = aces[i];
-                if (aceObj != null) {
-                    var ace = new Packages.io.personium.client.Ace();
-                    if ((aceObj["role"] != null) && (aceObj["role"] != "")) {
-                        ace.setPrincipal(aceObj["role"].core);
-                    }
-                    if ((aceObj["privilege"] != null) && (aceObj["privilege"] instanceof Array) && (aceObj["privilege"] != "")) {
-                        for (var n = 0; n < aceObj["privilege"].length; n++) {
-                            ace.addPrivilege(aceObj["privilege"][n]);
-                        }
-                    }
-                    acl.addAce(ace);
-                }
-            }
-        }
-        this.core.set(acl);
-    } catch (e) {
-        throw new _p.PersoniumException(e.message);
-    }
 };
