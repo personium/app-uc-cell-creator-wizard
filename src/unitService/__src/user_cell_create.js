@@ -70,8 +70,6 @@ function(request){
     * Current setup procedures only support creating a cell within the same Personium server.
     */
     var targetUnitUrl = unitAdminInfo.unitUrl;
-    var httpClient = new _p.extension.HttpClient();
-    var httpCode;
 
     // ********Get Unit Admin's Token********
     var accJson = {
@@ -170,23 +168,6 @@ _p.UnitManager.prototype.getToken = function() {
     return this.token;
 };
 
-_p.AccountManager.prototype.create = function(user, pass) {
-    var obj;
-    try {
-        pjvm.setDefaultHeader('X-Personium-Credential', pass); // hack - to be deleted when personium-client-java is fixed
-        
-        obj = this.core.create(_p.util.obj2javaJson(user), pass);
-        
-        pjvm.setDefaultHeader('X-Personium-Credential', null); // hack - to be deleted when personium-client-java is fixed
-        
-        var account = new _p.Account(obj);
-        account.name = obj.getName() + "";
-        return account;
-    } catch (e) {
-        throw new _p.PersoniumException(e.message);
-    }
-};
-
 _p.AclManager.prototype.get = function() {
 
     try {
@@ -250,7 +231,7 @@ _p.AclManager.prototype.set = function(param) {
                 if (aceObj != null) {
                     var ace = new Packages.io.personium.client.Ace();
                     if ((aceObj["role"] != null) && (aceObj["role"] != "")) {
-                        ace.setRole(aceObj["role"].core);
+                        ace.setPrincipal(aceObj["role"].core);
                     }
                     if ((aceObj["privilege"] != null) && (aceObj["privilege"] instanceof Array) && (aceObj["privilege"] != "")) {
                         for (var n = 0; n < aceObj["privilege"].length; n++) {
