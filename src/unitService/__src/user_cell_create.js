@@ -80,7 +80,6 @@ function(request){
     };
     var accessor = _p.as(accJson);
     var unit = accessor.unit(targetUnitUrl);
-    var token = unit.getToken().access_token;
 
     try {
         // ********Create Cell********
@@ -91,7 +90,7 @@ function(request){
         cell.ctl.account.create(user, accountPass);
     
         // ********Get created cell********
-        var cell = _p.as({accessToken: token}).cell(cellName);
+        var cell = unit.cell(cellName);
         // ********************************
 
         // ********Get created account********
@@ -150,20 +149,3 @@ function createResponse(tempCode, tempBody) {
         body: [isString ? tempBody : JSON.stringify(tempBody)]
     };
 }
-
-// hotfix - to be delete when the Personium Unit is upgraded to the latest personium-engine version that support the followings.
-_p.Accessor.prototype.unit = function(unitUrl) {
-    // Upgrade to Unit Admin User
-    var token = this.cell(unitUrl).getToken();
-    var accessor = _p.as({accessToken: token.access_token});
-
-    var unitObj = new Packages.io.personium.client.UnitManager(accessor.core);
-    var unit = new _p.UnitManager(unitObj);        
-    unit.token = token;
-
-    return unit;
-};
-
-_p.UnitManager.prototype.getToken = function() {
-    return this.token;
-};
