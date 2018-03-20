@@ -495,7 +495,7 @@ createCell = function () {
         });
     }).fail(function(error) {
         console.log(error.responseJSON.code);
-        console.log(error.responseJSON.message.value);
+        console.log(error.responseJSON.message);
         openCommonDialog('resultDialog.title', 'create_form.msg.error.fail_to_create_cell');
     });
 };

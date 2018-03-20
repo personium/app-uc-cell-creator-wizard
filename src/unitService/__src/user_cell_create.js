@@ -59,11 +59,11 @@ function(request){
         return createResponse(400, tempBody);
     }
     var params = _p.util.queryParse(bodyAsString);
-    var urlInfo = getUrlInfo(request);
-    var unitAdminInfo = getUnitAdminInfo(request);
     var cellName = params.cellName;
     var accountName = params.accName;
     var accountPass = params.accPass;
+    var urlInfo = getUrlInfo(request);
+    var unitAdminInfo = getUnitAdminInfo(request);
 
     /*
     * Set up necessary URLs for this service.
