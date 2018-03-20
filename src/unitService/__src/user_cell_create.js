@@ -71,17 +71,17 @@ function(request){
     */
     var targetUnitUrl = unitAdminInfo.unitUrl;
 
-    // ********Get Unit Admin ********
-    var accJson = {
-        cellUrl: unitAdminInfo.cellUrl, // Cell URL or Cell name
-        userId: unitAdminInfo.accountName,
-        password: unitAdminInfo.accountPass
-
-    };
-    var accessor = _p.as(accJson);
-    var unit = accessor.unit(targetUnitUrl);
-
     try {
+        // ********Get Unit Admin ********
+        var accJson = {
+            cellUrl: unitAdminInfo.cellUrl, // Cell URL or Cell name
+            userId: unitAdminInfo.accountName,
+            password: unitAdminInfo.accountPass
+
+        };
+        var accessor = _p.as(accJson);
+        var unit = accessor.unit(targetUnitUrl);
+
         // ********Create Cell********
         var cell = unit.ctl.cell.create({Name:cellName});
 
@@ -89,39 +89,32 @@ function(request){
         var user = {"Name": accountName};
         cell.ctl.account.create(user, accountPass);
     
-        // ********Get created cell********
-        var cell = unit.cell(cellName);
-
         // ********Get created account********
-        var accObj = cell.ctl.account.retrieve(accountName);
+        var acc = cell.ctl.account.retrieve(accountName);
 
         // ********Create admin role********
         var roleJson = {
             "Name": "admin"
         };
-        var roleObj = cell.ctl.role.create(roleJson);
+        var role = cell.ctl.role.create(roleJson);
 
-        // ********Assign roles to accounts********
-        roleObj.account.link(accObj);
-        // ****************************************
+        // ********Assign roles to account********
+        role.account.link(acc);
 
         // ********Set all authority admin role********
         var param = {
-            'ace': [{'role':cell.ctl.role.retrieve(roleJson), 'privilege':['root']}]
+            'ace': [{'role': role, 'privilege':['root']}]
         };
-
         cell.acl.set(param);
-        // ********************************************
 
         // ********Get the token of the created cell********
-        var accJson = {
+        accJson = {
             cellUrl: cellName,
             userId: accountName,
             password: accountPass
         };
-        var createCell = _p.as(accJson).cell();
-        var cellToken = createCell.getToken();
-        // *************************************************
+        var createdCell = _p.as(accJson).cell();
+        var cellToken = createdCell.getToken();
     } catch (e) {
         return createErrorResponse500(e);
     }
