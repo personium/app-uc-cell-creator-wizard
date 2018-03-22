@@ -493,20 +493,26 @@ createCell = function () {
                         });
                 });
         });
-    }).fail(function() {
+    }).fail(function(error) {
+        console.log(error.responseJSON.code);
+        console.log(error.responseJSON.message);
         openCommonDialog('resultDialog.title', 'create_form.msg.error.fail_to_create_cell');
     });
 };
 
+/*
+ * obj is automatically converted to query string
+ */
 createCellAPI = function () {
+    let obj = {
+        'cellName': $("#cell_name").val(),
+        'accName': $("#admin_name").val(),
+        'accPass': $("#admin_password").val()
+    };
     return $.ajax({
         type:"POST",
         url: createCellApiUrl, // unitService engine URL (where this service is deployed)
-        data: {
-            'cellName': $("#cell_name").val(),
-            'accName': $("#admin_name").val(),
-            'accPass': $("#admin_password").val()
-        },
+        data: obj,
         headers: {
             'Accept':'application/json'
         }
