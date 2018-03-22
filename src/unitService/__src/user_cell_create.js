@@ -87,11 +87,8 @@ function(request){
 
         // ********Create admin account********
         var user = {"Name": accountName};
-        cell.ctl.account.create(user, accountPass);
+        var acc = cell.ctl.account.create(user, accountPass);
     
-        // ********Get created account********
-        var acc = cell.ctl.account.retrieve(accountName);
-
         // ********Create admin role********
         var roleJson = {
             "Name": "admin"
