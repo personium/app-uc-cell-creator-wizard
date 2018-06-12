@@ -6,53 +6,29 @@ function(request){
         
         var params = personium.parseBodyAsQuery(request);
         // verify parameter information
-        personium.setAllowedKeys(['cellName', 'accName', 'accPass']);
-        personium.setRequiredKeys(['cellName', 'accName', 'accPass']);
+        personium.setAllowedKeys(['cellName', 'accName', 'accPass', 'profile']);
+        personium.setRequiredKeys(['cellName', 'accName', 'accPass', 'profile']);
         personium.validateKeys(params);
-        
-        var cellName = params.cellName;
-        var accountName = params.accName;
-        var accountPass = params.accPass;
-        
-        var accInfo = require("acc_info").accInfo;
-        
+
         // ********Get Unit Admin ********
-        var accessor = _p.as(accInfo.UNIT_ADMIN_INFO);
-        var unit = accessor.unit(accInfo.UNIT_URL);
+        var unit = getUnitAdmin();
 
         // ********Create Cell********
-        var cell = unit.ctl.cell.create({Name:cellName});
+        var cellName = params.cellName;
+        var cell = unit.ctl.cell.create(
+            {
+                Name: cellName
+            }
+        );
 
-        // ********Create admin account********
-        var user = {"Name": accountName};
-        var acc = cell.ctl.account.create(user, accountPass);
-    
-        // ********Create admin role********
-        var roleJson = {
-            "Name": "admin"
-        };
-        var role = cell.ctl.role.create(roleJson);
-
-        // ********Assign roles to account********
-        role.account.link(acc);
-
-        // ********Set all authority admin role********
-        var param = {
-            'ace': [{'role': role, 'privilege':['root']}]
-        };
-        cell.acl.set(param);
+        // ********Create account with admin role********
+        createAdminAccount(cell, params);
         
         // ********Create profile.json files inside the main box********
-        createProfiles(cell);
+        createProfiles(cell, params);
 
         // ********Get the token of the created cell********
-        var accJson = {
-            cellUrl: cellName,
-            userId: accountName,
-            password: accountPass
-        };
-        var createdCell = _p.as(accJson).cell();
-        var cellToken = createdCell.getToken();
+        var cellToken = cell.getToken();
         
         return personium.createResponse(201, cellToken);
     } catch (e) {
@@ -60,17 +36,59 @@ function(request){
     }
 };
 
-function createProfiles(cell) {
+function getUnitAdmin() {
+    var accInfo = require("acc_info").accInfo;
+    var accessor = _p.as(accInfo.UNIT_ADMIN_INFO);
+    return accessor.unit(accInfo.UNIT_URL);
+};
+
+function createAdminAccount(cell, params) {
+    // ********Create account********
+    var accountName = params.accName;
+    var accountPass = params.accPass;
+    var user = {
+        Name: accountName
+    };
+    var acc = cell.ctl.account.create(user, accountPass);
+
+    // ********Create admin role********
+    var roleJson = {
+        Name: "admin"
+    };
+    var role = cell.ctl.role.create(roleJson);
+
+    // ********Assign roles to account********
+    role.account.link(acc);
+
+    // ********Set all authority admin role********
+    var param = {
+        ace: [
+            {
+                role: role,
+                privilege: ['root']
+            }
+        ]
+    };
+    cell.acl.set(param);
+};
+
+function createProfiles(cell, params) {
+    var tempProfile = JSON.parse(params.profile);
     var userMainBox = cell.box("__");
-    userMainBox.mkCol('locales'); // create folder
+    
+    createFile(userMainBox, 'profile.json', tempProfile);
     createFile(userMainBox, 'roles.json', {});
     createFile(userMainBox, 'relations.json', {});
+
+    userMainBox.mkCol('locales'); // create folder
 
     var localesFolder = userMainBox.col('locales');
     localesFolder.mkCol('en');
     localesFolder.mkCol('ja');
+
     var enFolder = localesFolder.col('en');
     var jaFolder = localesFolder.col('ja');
+    
     createFile(enFolder, 'profile.json', {});
     createFile(jaFolder, 'profile.json', {});
 };
