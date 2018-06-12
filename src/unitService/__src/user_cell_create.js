@@ -41,6 +41,9 @@ function(request){
             'ace': [{'role': role, 'privilege':['root']}]
         };
         cell.acl.set(param);
+        
+        // ********Create profile.json files inside the main box********
+        createProfiles(cell);
 
         // ********Get the token of the created cell********
         var accJson = {
@@ -55,6 +58,31 @@ function(request){
     } catch (e) {
         return personium.createErrorResponse(e);
     }
+};
+
+function createProfiles(cell) {
+    var userMainBox = cell.box("__");
+    userMainBox.mkCol('locales'); // create folder
+    createFile(userMainBox, 'roles.json', {});
+    createFile(userMainBox, 'relations.json', {});
+
+    var localesFolder = userMainBox.col('locales');
+    localesFolder.mkCol('en');
+    localesFolder.mkCol('ja');
+    var enFolder = localesFolder.col('en');
+    var jaFolder = localesFolder.col('ja');
+    createFile(enFolder, 'profile.json', {});
+    createFile(jaFolder, 'profile.json', {});
+};
+
+function createFile(target, filename, contents) {
+    target.put({
+        path: filename,
+        data: JSON.stringify(contents),
+        contentType: "application/json",
+        charset: "utf-8",
+        etag: "*"
+    });
 };
 
 var personium = require("personium").personium;
