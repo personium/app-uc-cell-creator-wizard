@@ -428,74 +428,50 @@ demo = function() {
 };
 
 createCell = function () {
-    createCellAPI().done(function(data) {
+    let tempProfile = createProfileInfo();
+    createCellAPI(tempProfile).done(function(data) {
         let access_token = data.access_token;
         let cellUrl = [
             targetRootUrl,
             $("#cell_name").val(),
             '/'
         ].join('');
-        let cellProfileUrl = [
-            targetRootUrl,
-            $("#cell_name").val(),
-            '/__/profile.json'
-        ].join("");
-        let rolesJSONUrl = [
-            targetRootUrl,
-            $("#cell_name").val(),
-            '/__/roles.json'
-        ].join("");
-        let relationsJSONUrl = [
-            targetRootUrl,
-            $("#cell_name").val(),
-            '/__/relations.json'
-        ].join("");
+        $.when(setCollectionACLAPI(access_token, "locales"), setCollectionACLAPI(access_token, "profile.json"), setCollectionACLAPI(access_token, "roles.json"), setCollectionACLAPI(access_token, "relations.json"))
+            .done(function(r1, r2, r3, r4) {
+                register2DirectoryAPI(cellUrl);
+                
+                if (HomeApplication.enableInstall()) {
+                    HomeApplication.installBox(access_token);
+                };
 
-        let tempProfile = createProfileInfo();
+                CellManager.installBox(access_token);
 
-        createCollectionAPI(access_token, "locales").done(function() {
-            openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
-        }).fail(function() {
-            openCommonDialog('resultDialog.title', 'create_form.msg.info.private_profile_cell_created');
-        }).always(function() {
-            $.when(uploadCellProfileAPI(access_token, cellProfileUrl, tempProfile), uploadEmptyJSONAPI(access_token, rolesJSONUrl), uploadEmptyJSONAPI(access_token, relationsJSONUrl))
-                .done(function(){
-                    $.when(setCollectionACLAPI(access_token, "locales"), setCollectionACLAPI(access_token, "profile.json"), setCollectionACLAPI(access_token, "roles.json"), setCollectionACLAPI(access_token, "relations.json"))
-                        .done(function(r1, r2, r3, r4) {
-                            register2DirectoryAPI(cellUrl);
-                            
-                            if (HomeApplication.enableInstall()) {
-                                HomeApplication.installBox(access_token);
-                            };
+                if (getSelectedCellType() == "App") {
 
-                            CellManager.installBox(access_token);
+                    let appUserInfo = $('<p>', {
+                        style: "word-wrap: break-word;"
+                    });
 
-                            if (getSelectedCellType() == "App") {
-
-                                let appUserInfo = $('<p>', {
-                                    style: "word-wrap: break-word;"
-                                });
-
-                                restCreateAccountAPI(access_token).done(function() {
-                                    console.log("Succeeded in created: " + $('#name').val());
-                                    appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
-                                }).fail(function(data) {
-                                    let res = JSON.parse(data.responseText);
-                                    console.log("Failed to created: " + $('#name').val());
-                                    console.log("An error has occurred.\n" + res.message.value);
-                                    appUserInfo.attr('data-i18n', 'create_form.msg.error.fail_to_create_app_user');
-                                }).always(function() {
-                                    displayCellInfo(appUserInfo);
-                                });
-                            } else {
-                                displayCellInfo();
-                            }
-                        });
-                });
-        });
+                    restCreateAccountAPI(access_token).done(function() {
+                        console.log("Succeeded in created: " + $('#name').val());
+                        appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
+                    }).fail(function(data) {
+                        let res = JSON.parse(data.responseText);
+                        console.log("Failed to created: " + $('#name').val());
+                        console.log("An error has occurred.\n" + res.message.value);
+                        appUserInfo.attr('data-i18n', 'create_form.msg.error.fail_to_create_app_user');
+                    }).always(function() {
+                        displayCellInfo(appUserInfo);
+                    });
+                } else {
+                    displayCellInfo();
+                }
+            })
+            .always(function(){
+                openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
+            });
     }).fail(function(error) {
-        console.log(error.responseJSON.code);
-        console.log(error.responseJSON.message);
+        console.log(error.responseJSON);
         openCommonDialog('resultDialog.title', 'create_form.msg.error.fail_to_create_cell');
     });
 };
@@ -503,11 +479,12 @@ createCell = function () {
 /*
  * obj is automatically converted to query string
  */
-createCellAPI = function () {
+createCellAPI = function (tempProfile) {
     let obj = {
         'cellName': $("#cell_name").val(),
         'accName': $("#admin_name").val(),
-        'accPass': $("#admin_password").val()
+        'accPass': $("#admin_password").val(),
+        'profile': JSON.stringify(tempProfile)
     };
     return $.ajax({
         type:"POST",
@@ -592,16 +569,6 @@ uploadCellProfileAPI = function(token, cellProfileUrl, profileInfo) {
             'Authorization':'Bearer ' + token
         }
     });
-};
-
-uploadEmptyJSONAPI = function(token, url) {
-    return $.ajax({
-        type: "PUT",
-        url: url,
-        data: JSON.stringify({}),
-        headers: {'Accept':'application/json',
-                  'Authorization':'Bearer ' + token}
-    })
 };
 
 restCreateAccountAPI = function(token) {

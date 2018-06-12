@@ -1,138 +1,106 @@
 function(request){
-    var getUnitAdminInfo = function(request) {
-        /*
-         * Replace the "***" with the target Personium Unit URL (with ending slash)
-         * e.g. 'https://demo.personium.io/'
-         */
-        var targetUnitUrl = '***';
-
-        /*
-        * Replace the "***" with a valid Unit Admin cell name of the target Personium Unit.
-        */
-        var targetUnitAdminCellName = '***';
-
-        /*
-        * Replace the "***" with a valid Unit Admin account name of the target Personium Unit.
-        */
-        var targetUnitAdminAccountName = '***';
-
-        /*
-        * Replace the "***" with a valid Unit Admin account password of the target Personium Unit.
-        */
-        var targetUnitAdminAccountPassword = '***';
-
-        var baseUrl = request.headers['x-baseurl'];
-        var unitUrl = (targetUnitUrl == '***') ? baseUrl : targetUnitUrl;
-    
-        return {
-            unitUrl: unitUrl,
-            cellUrl: unitUrl + targetUnitAdminCellName + '/',
-            accountName: targetUnitAdminAccountName,
-            accountPass: targetUnitAdminAccountPassword
-        }
-    }
-
-    var getUrlInfo = function(request) {
-        var baseUrl = request.headers['x-baseurl'];
-        var forwardedPath = request.headers['x-forwarded-path'];
-        var cellName = forwardedPath.split('/').splice(1)[0];
-        var boxName = forwardedPath.split('/').splice(1)[1];
-        var urlInfo = {
-            unitUrl: baseUrl,
-            cellUrl: baseUrl + cellName + '/',
-            cellName: cellName,
-            boxName: boxName
-        };
-
-        return urlInfo;
-    }
-
-    var bodyAsString = request["input"].readAll();
-    if (bodyAsString === "") {
-        var tempBody = {
-            code: "PR400-OD-0006",
-            message: {
-                lang: "en",
-                value: "Request body is empty."
-            }
-        };
-        return createResponse(400, tempBody);
-    }
-    var params = _p.util.queryParse(bodyAsString);
-    var cellName = params.cellName;
-    var accountName = params.accName;
-    var accountPass = params.accPass;
-    var urlInfo = getUrlInfo(request);
-    var unitAdminInfo = getUnitAdminInfo(request);
-
-    /*
-    * Set up necessary URLs for this service.
-    * Current setup procedures only support creating a cell within the same Personium server.
-    */
-    var targetUnitUrl = unitAdminInfo.unitUrl;
-
     try {
-        // ********Get Unit Admin ********
-        var accJson = {
-            cellUrl: unitAdminInfo.cellUrl, // Cell URL or Cell name
-            userId: unitAdminInfo.accountName,
-            password: unitAdminInfo.accountPass
+        personium.validateRequestMethod(["POST"], request);
+        
+        personium.verifyOrigin(request);
+        
+        var params = personium.parseBodyAsQuery(request);
+        // verify parameter information
+        personium.setAllowedKeys(['cellName', 'accName', 'accPass', 'profile']);
+        personium.setRequiredKeys(['cellName', 'accName', 'accPass', 'profile']);
+        personium.validateKeys(params);
 
-        };
-        var accessor = _p.as(accJson);
-        var unit = accessor.unit(targetUnitUrl);
+        // ********Get Unit Admin ********
+        var unit = getUnitAdmin();
 
         // ********Create Cell********
-        var cell = unit.ctl.cell.create({Name:cellName});
+        var cellName = params.cellName;
+        var cell = unit.ctl.cell.create(
+            {
+                Name: cellName
+            }
+        );
 
-        // ********Create admin account********
-        var user = {"Name": accountName};
-        var acc = cell.ctl.account.create(user, accountPass);
-    
-        // ********Create admin role********
-        var roleJson = {
-            "Name": "admin"
-        };
-        var role = cell.ctl.role.create(roleJson);
-
-        // ********Assign roles to account********
-        role.account.link(acc);
-
-        // ********Set all authority admin role********
-        var param = {
-            'ace': [{'role': role, 'privilege':['root']}]
-        };
-        cell.acl.set(param);
+        // ********Create account with admin role********
+        createAdminAccount(cell, params);
+        
+        // ********Create profile.json files inside the main box********
+        createProfiles(cell, params);
 
         // ********Get the token of the created cell********
-        accJson = {
-            cellUrl: cellName,
-            userId: accountName,
-            password: accountPass
-        };
-        var createdCell = _p.as(accJson).cell();
-        var cellToken = createdCell.getToken();
+        var cellToken = cell.getToken();
+        
+        return personium.createResponse(201, cellToken);
     } catch (e) {
-        return createErrorResponse500(e);
+        return personium.createErrorResponse(e);
     }
-
-    return createResponse(201, cellToken);
 };
 
-function createSuccessResponse(tempBody) {
-    return createResponse(200, tempBody);
+function getUnitAdmin() {
+    var accInfo = require("acc_info").accInfo;
+    var accessor = _p.as(accInfo.UNIT_ADMIN_INFO);
+    return accessor.unit(accInfo.UNIT_URL);
 };
 
-function createErrorResponse500(tempBody) {
-    return createResponse(500, tempBody);
-};
-
-function createResponse(tempCode, tempBody) {
-    var isString = typeof tempBody == "string";
-    var tempHeaders = isString ? {"Content-Type":"text/plain"} : {"Content-Type":"application/json"};
-    return {
-        status: tempCode,
-        headers: tempHeaders,
-        body: [isString ? tempBody : JSON.stringify(tempBody)]
+function createAdminAccount(cell, params) {
+    // ********Create account********
+    var accountName = params.accName;
+    var accountPass = params.accPass;
+    var user = {
+        Name: accountName
     };
-}
+    var acc = cell.ctl.account.create(user, accountPass);
+
+    // ********Create admin role********
+    var roleJson = {
+        Name: "admin"
+    };
+    var role = cell.ctl.role.create(roleJson);
+
+    // ********Assign roles to account********
+    role.account.link(acc);
+
+    // ********Set all authority admin role********
+    var param = {
+        ace: [
+            {
+                role: role,
+                privilege: ['root']
+            }
+        ]
+    };
+    cell.acl.set(param);
+};
+
+function createProfiles(cell, params) {
+    var tempProfile = JSON.parse(params.profile);
+    var userMainBox = cell.box("__");
+    
+    createFile(userMainBox, 'profile.json', tempProfile);
+    createFile(userMainBox, 'roles.json', {});
+    createFile(userMainBox, 'relations.json', {});
+
+    userMainBox.mkCol('locales'); // create folder
+
+    var localesFolder = userMainBox.col('locales');
+    localesFolder.mkCol('en');
+    localesFolder.mkCol('ja');
+
+    var enFolder = localesFolder.col('en');
+    var jaFolder = localesFolder.col('ja');
+    
+    createFile(enFolder, 'profile.json', {});
+    createFile(jaFolder, 'profile.json', {});
+};
+
+function createFile(target, filename, contents) {
+    target.put({
+        path: filename,
+        data: JSON.stringify(contents),
+        contentType: "application/json",
+        charset: "utf-8",
+        etag: "*"
+    });
+};
+
+var personium = require("personium").personium;
