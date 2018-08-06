@@ -39,10 +39,10 @@ var defaultAppProfileUrl = [serviceCellUrl, "__/defaultAppProfile.json"].join(""
 var defaultProfile = {};
 var defaultAppProfile = {};
 var HomeApplication = {
-    cellUrl: "https://demo.personium.io/HomeApplication/",
+    cellUrl: "https://demo.personium.io/app-cc-home/",
     disabledList: ["App"],
     barfilePath: function() {
-        return this.cellUrl + '__/home.bar';
+        return this.cellUrl + '__/app.bar';
     },
     targetBoxPath: function() {
         return targetRootUrl + $("#cell_name").val() + '/home/';
