@@ -34,9 +34,9 @@ exports.personium = (function() {
             "__token"
         ].join("");
         var headers = {
-            "Accept": "application/json",
+            "Accept": "application/json"
         };
-        var contentType = "text/plain";
+        var contentType = "application/x-www-form-urlencoded";
         var body = [
             "grant_type=authorization_code",
             "code=" + query.code,
@@ -237,12 +237,13 @@ exports.personium = (function() {
             return personium.createResponse(500, e);
         }
 
-        var tempErrorMessage;
+        var tempErrorMessage = e.message;
+        var raw = e;
         try {
             // Convert to JSON so that response header can be properly configured ("Content-Type":"application/json").
             tempErrorMessage = JSON.parse(e.message);
         } catch(e) {
-            tempErrorMessage = e.message;
+            tempErrorMessage = { error: "Fail to parse JSON. " + tempErrorMessage, raw: raw };
         }
         if (_.isUndefined(tempErrorCode) || _.isNull(tempErrorCode) || tempErrorCode == 0) {
             return personium.createResponse(500, tempErrorMessage);

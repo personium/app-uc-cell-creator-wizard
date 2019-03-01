@@ -14,60 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * Replace the "***" with a valid Personium domain name
- */
-var deployedDomainName = "***";
-
-/*
- * Replace the "***" with a valid cell name where this service is running.
- */
-var deployedCellName = "***";
-
 /* 
  * Set up necessary URLs for this service.
  * Current setup procedures only support creating a cell within the same Personium server.
  */
 var jqueryValidateMessage_ja = "https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/localization/messages_ja.js";
-var rootUrl = ["https://", deployedDomainName, "/"].join("");
-var targetRootUrl = rootUrl;
-var serviceCellUrl = [rootUrl, deployedCellName, "/"].join("");
+var fqdn = "demo.personium.io";
+var serviceCellUrl = "https://app-uc-cell-creator-wizard.demo.personium.io/";
 var createCellApiUrl = [serviceCellUrl, "__/unitService/user_cell_create"].join("");
-var register2DirectoryApiUrl = "https://demo.personium.io/directory/app-uc-directory/Engine/registerDirectoryEntry";
+var register2DirectoryApiUrl = "https://directory.demo.personium.io/app-uc-directory/Engine/registerDirectoryEntry";
 var defaultProfileUrl = [serviceCellUrl, "__/defaultProfile.json"].join("");
 var defaultAppProfileUrl = [serviceCellUrl, "__/defaultAppProfile.json"].join("");
 var defaultProfile = {};
 var defaultAppProfile = {};
 var HomeApplication = {
-    cellUrl: "https://demo.personium.io/app-cc-home/",
     disabledList: ["App"],
-    barfilePath: function() {
-        return this.cellUrl + '__/app.bar';
-    },
-    targetBoxPath: function() {
-        return targetRootUrl + $("#cell_name").val() + '/home/';
-    },
-    loginUrl: function() {
-        return targetRootUrl + $("#cell_name").val() + '/home/login.html';
-    },
     enableInstall: function() {
         return !(_.contains(this.disabledList, getSelectedCellType()));
-    },
-    installBox: function(token) {
-        installBox(token, this);
     }
 };
 
 var CellManager = {
-    cellUrl: "https://demo.personium.io/app-uc-unit-manager/",
+    cellUrl: "https://app-uc-unit-manager.demo.personium.io/",
     barfilePath: function() {
         return this.cellUrl + '__/cell-manager.bar';
     },
     targetBoxPath: function() {
-        return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_cell-manager/';
+        return "https://" + $("#cell_name").val() + "." + fqdn + '/io_personium_demo_cell-manager/';
     },
     loginUrl: function() {
-        return targetRootUrl + $("#cell_name").val() + '/io_personium_demo_cell-manager/src/login.html';
+        return "https://" + $("#cell_name").val() + "." + fqdn + '/io_personium_demo_cell-manager/src/login.html';
     },
     installBox: function(token) {
         installBox(token, this);
@@ -345,7 +321,7 @@ checkCellExist = function (tab, navigation, nextIndex) {
             }
             navigation.find('li:has([data-toggle="tab"])' + ':eq('+nextIndex+') a').tab('show');
             if (!$("#wizardPicturePreview").data("attached")) {
-                var cellImgDef = ut.getJdenticon(targetRootUrl + cellName + "/");
+                var cellImgDef = ut.getJdenticon("https://" + cellName + "." + fqdn + "/");
                 $("#wizardPicturePreview").attr("src", cellImgDef);
             }
         }).always(function(){
@@ -357,7 +333,7 @@ checkCellExist = function (tab, navigation, nextIndex) {
 getCell = function (cellName) {
     return $.ajax({
         type: "GET",
-        url: targetRootUrl + cellName + "/", // Target Personium URL (can be another Personium server)
+        url: "https://" + cellName + "." + fqdn +  + "/", // Target Personium URL (can be another Personium server)
         headers:{
             'Accept':'application/xml'
         }
@@ -415,15 +391,22 @@ getProfile = function(url) {
 };
 
 demo = function() {
+    let cellUrl = [
+            "https://",
+            $("#cell_name").val(),
+            ".",
+            fqdn,
+            '/'
+        ].join('');
     openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
     if (getSelectedCellType() == "App") {
         let appUserInfo = $('<p>', {
             style: "word-wrap: break-word;"
         });
         appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
-        displayCellInfo(appUserInfo);
+        displayCellInfo(cellUrl, appUserInfo);
     } else {
-        displayCellInfo();
+        displayCellInfo(cellUrl);
     }
 };
 
@@ -432,44 +415,39 @@ createCell = function () {
     createCellAPI(tempProfile).done(function(data) {
         let access_token = data.access_token;
         let cellUrl = [
-            targetRootUrl,
+            "https://",
             $("#cell_name").val(),
+            ".",
+            fqdn,
             '/'
         ].join('');
-        $.when(setCollectionACLAPI(access_token, "locales"), setCollectionACLAPI(access_token, "profile.json"), setCollectionACLAPI(access_token, "roles.json"), setCollectionACLAPI(access_token, "relations.json"))
-            .done(function(r1, r2, r3, r4) {
-                register2DirectoryAPI(cellUrl);
+        
+        register2DirectoryAPI(cellUrl);
                 
-                if (HomeApplication.enableInstall()) {
-                    HomeApplication.installBox(access_token);
-                };
+        CellManager.installBox(access_token);
 
-                CellManager.installBox(access_token);
+        if (getSelectedCellType() == "App") {
 
-                if (getSelectedCellType() == "App") {
-
-                    let appUserInfo = $('<p>', {
-                        style: "word-wrap: break-word;"
-                    });
-
-                    restCreateAccountAPI(access_token).done(function() {
-                        console.log("Succeeded in created: " + $('#name').val());
-                        appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
-                    }).fail(function(data) {
-                        let res = JSON.parse(data.responseText);
-                        console.log("Failed to created: " + $('#name').val());
-                        console.log("An error has occurred.\n" + res.message.value);
-                        appUserInfo.attr('data-i18n', 'create_form.msg.error.fail_to_create_app_user');
-                    }).always(function() {
-                        displayCellInfo(appUserInfo);
-                    });
-                } else {
-                    displayCellInfo();
-                }
-            })
-            .always(function(){
-                openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
+            let appUserInfo = $('<p>', {
+                style: "word-wrap: break-word;"
             });
+
+            restCreateAccountAPI(access_token).done(function() {
+                console.log("Succeeded in created: " + $('#name').val());
+                appUserInfo.attr('data-i18n', 'create_form.msg.info.app_user_created');
+            }).fail(function(data) {
+                let res = JSON.parse(data.responseText);
+                console.log("Failed to created: " + $('#name').val());
+                console.log("An error has occurred.\n" + res.message.value);
+                appUserInfo.attr('data-i18n', 'create_form.msg.error.fail_to_create_app_user');
+            }).always(function() {
+                displayCellInfo(cellUrl, appUserInfo);
+            });
+        } else {
+            displayCellInfo(cellUrl);
+        }
+
+        openCommonDialog('resultDialog.title', 'create_form.msg.info.cell_created');
     }).fail(function(error) {
         console.log(error.responseJSON);
         openCommonDialog('resultDialog.title', 'create_form.msg.error.fail_to_create_cell');
@@ -537,7 +515,7 @@ createCollectionAPI = function (token, name) {
     var cellName = $("#cell_name").val();
     return $.ajax({
         type: "MKCOL",
-        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
+        url: "https://" + cellName + "." + fqdn + "/__/" + name, // Target Personium URL (can be another Personium server)
         data: '<?xml version="1.0" encoding="utf-8"?><D:mkcol xmlns:D="DAV:" xmlns:p="urn:x-personium:xmlns"><D:set><D:prop><D:resourcetype><D:collection/></D:resourcetype></D:prop></D:set></D:mkcol>',
         headers: {
             'Accept':'application/json',
@@ -545,19 +523,6 @@ createCollectionAPI = function (token, name) {
         }
     })
 }
-
-setCollectionACLAPI = function (token, name) {
-    var cellName = $("#cell_name").val();
-    return $.ajax({
-        type: "ACL",
-        url: targetRootUrl + cellName + "/__/" + name, // Target Personium URL (can be another Personium server)
-        data: "<?xml version=\"1.0\" encoding=\"utf-8\" ?><D:acl xmlns:p=\"urn:x-personium:xmlns\" xmlns:D=\"DAV:\" xml:base=\"" + rootUrl + cellName + "/__role/__/\"><D:ace><D:principal><D:all/></D:principal><D:grant><D:privilege><p:read/></D:privilege></D:grant></D:ace></D:acl>",
-        headers: {
-            'Accept':'application/json',
-            'Authorization':'Bearer ' + token
-        }
-    });
-};
 
 uploadCellProfileAPI = function(token, cellProfileUrl, profileInfo) {
     return $.ajax({
@@ -573,8 +538,10 @@ uploadCellProfileAPI = function(token, cellProfileUrl, profileInfo) {
 
 restCreateAccountAPI = function(token) {
     let createAccountRESTURL = [
-        targetRootUrl,
+        "https://",
         $("#cell_name").val(),
+        ".",
+        fqdn,
         '/__ctl/Account'
     ].join("");
 
@@ -593,7 +560,7 @@ restCreateAccountAPI = function(token) {
     });
 };
 
-displayCellInfo = function(appUserInfo) {
+displayCellInfo = function(userCellUrl, appUserInfo) {
     displayCellName();
 
     displayProfileDisplayName();
@@ -607,8 +574,8 @@ displayCellInfo = function(appUserInfo) {
     };
 
     if (HomeApplication.enableInstall()) {
-        displayHomeApplicationLoginURL();
-        displayHomeApplicationQRCode();
+        displayHomeApplicationLoginURL(userCellUrl);
+        displayHomeApplicationQRCode(userCellUrl);
     };
 
     displayCellManagerLoginURL();
@@ -659,8 +626,8 @@ displayRow = function(labelKey, value) {
     $("#modal-common .modal-body").append($(aDiv));
 };
 
-displayHomeApplicationLoginURL = function() {
-    displayRowWithCopyToCliboard("homeApp", '[html]wizard_pane.cell_info.home_app_url.confirm_label', HomeApplication.loginUrl());
+displayHomeApplicationLoginURL = function(userCellUrl) {
+    displayRowWithCopyToCliboard("homeApp", '[html]wizard_pane.cell_info.home_app_url.confirm_label', userCellUrl);
 };
 
 displayCellManagerLoginURL = function() {
@@ -716,9 +683,9 @@ displayRowWithCopyToCliboard = function(prefix, labelKey, value) {
     $("#modal-common .modal-body").append($(aDiv));
 };
 
-displayHomeApplicationQRCode = function() {
+displayHomeApplicationQRCode = function(userCellUrl) {
     let labelStr = '[html]wizard_pane.cell_info.home_app_url.qr_code';
-    displayQRCode(HomeApplication.loginUrl(), labelStr);
+    displayQRCode(userCellUrl, labelStr);
 };
 
 displayCellManagerQRCode = function() {
