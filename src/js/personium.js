@@ -19,12 +19,12 @@
  * Current setup procedures only support creating a cell within the same Personium server.
  */
 var jqueryValidateMessage_ja = "https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/localization/messages_ja.js";
-var fqdn = "demo.personium.io";
-var serviceCellUrl = "https://app-uc-cell-creator-wizard.demo.personium.io/";
-var createCellApiUrl = [serviceCellUrl, "__/unitService/user_cell_create"].join("");
-var register2DirectoryApiUrl = "https://directory.demo.personium.io/app-uc-directory/Engine/registerDirectoryEntry";
-var defaultProfileUrl = [serviceCellUrl, "__/defaultProfile.json"].join("");
-var defaultAppProfileUrl = [serviceCellUrl, "__/defaultAppProfile.json"].join("");
+var fqdn = "demo-jp.personium.io";
+var serviceCellUrl = "https://app-uc-cell-creator-wizard.demo-jp.personium.io/";
+var createCellApiUrl = [serviceCellUrl, "__/html/Engine/user_cell_create"].join("");
+var register2DirectoryApiUrl = "https://directory.demo-jp.personium.io/app-uc-directory/Engine/registerDirectoryEntry";
+var defaultProfileUrl = [serviceCellUrl, "__/html/defaultProfile.json"].join("");
+var defaultAppProfileUrl = [serviceCellUrl, "__/html/defaultAppProfile.json"].join("");
 var defaultProfile = {};
 var defaultAppProfile = {};
 var HomeApplication = {
@@ -35,15 +35,15 @@ var HomeApplication = {
 };
 
 var CellManager = {
-    cellUrl: "https://app-uc-unit-manager.demo.personium.io/",
+    cellUrl: "https://app-uc-unit-manager.demo-jp.personium.io/",
     barfilePath: function() {
         return this.cellUrl + '__/cell-manager.bar';
     },
     targetBoxPath: function() {
-        return "https://" + $("#cell_name").val() + "." + fqdn + '/io_personium_demo_cell-manager/';
+        return "https://" + $("#cell_name").val() + "." + fqdn + '/cell-manager/';
     },
     loginUrl: function() {
-        return "https://" + $("#cell_name").val() + "." + fqdn + '/io_personium_demo_cell-manager/src/login.html';
+        return "https://" + $("#cell_name").val() + "." + fqdn + '/cell-manager/src/login.html';
     },
     installBox: function(token) {
         installBox(token, this);
@@ -333,7 +333,7 @@ checkCellExist = function (tab, navigation, nextIndex) {
 getCell = function (cellName) {
     return $.ajax({
         type: "GET",
-        url: "https://" + cellName + "." + fqdn +  + "/", // Target Personium URL (can be another Personium server)
+        url: "https://" + cellName + "." + fqdn + "/", // Target Personium URL (can be another Personium server)
         headers:{
             'Accept':'application/xml'
         }
