@@ -9,7 +9,7 @@
             "cell_name": {
                 "label": "Cell Name <small data-i18n='label.required'></small>",
                 "placeholder": "Name (max. 128 characters) of the new cell",
-                "spec": "Can contain letters, numbers, underscores and hyphens.<br/>Must begin with alphanumeric characters, with a maximum of 128 characters.",
+                "spec": "Single-byte alphanumeric characters (lower case), hyphens('-').<br/>Must begin with single-byte alphanumeric character, with a maximum of 128 characters.",
                 "cell_already_exist": "Cell already exists.",
                 "confirm_label": "Cell Name"
             },
@@ -43,13 +43,13 @@
                 "name": {
                     "label": "Name <small data-i18n='label.required'></small>",
                     "placeholder": "Name (max. 128 characters) of the new account",
-                    "spec":"Can contain letters, numbers and symbols (-_!$*=^`{|}~.@).<br/>Must begin with alphanumeric characters, with a maximum of 128 characters.",
+                    "spec":"Single-byte alphanumeric characters and symbols (-_!$*=^`{|}~.@).<br/>Must begin with single-byte alphanumeric character, with a maximum of 128 characters.",
                     "confirm_label": "Name ($t(wizard_pane.account.admin.description))"
                 },
                 "password": {
                     "label": "Password <small data-i18n='label.required'></small>",
                     "placeholder": "Create a password (6 - 32 characters)",
-                    "spec": "Can contains letters, numbers, underscores and hyphens.<br/>Must contains a minimum of 6 and maximum of 32 characters."
+                    "spec": "Single-byte alphanumeric characters and symbols (-_!$*=^`{|}~.@).<br/>Must contains a minimum of 6 and maximum of 32 characters."
                 },
                 "confirm_password": {
                     "label": "Confrm Password <small data-i18n='label.required'></small>",
@@ -61,13 +61,13 @@
                 "name": {
                     "label": "Name <small data-i18n='label.required'></small>",
                     "placeholder": "Name (max. 128 characters) of the new account",
-                    "spec":"Can contain letters, numbers and symbols (-_!$*=^`{|}~.@).<br/>Must begin with alphanumeric characters, with a maximum of 128 characters.",
+                    "spec":"Single-byte alphanumeric characters and symbols (-_!$*=^`{|}~.@).<br/>Must begin with single-byte alphanumeric characters, with a maximum of 128 characters.",
                     "confirm_label": "Name ($t(wizard_pane.account.app.description))"
                 },
                 "password": {
                     "label": "Password",
                     "placeholder": "Create a password (6 - 32 characters)",
-                    "spec": "Can contains letters, numbers, underscores and hyphens.<br/>Must contains a minimum of 6 and maximum of 32 characters."
+                    "spec": "Single-byte alphanumeric characters and symbols (-_!$*=^`{|}~.@).<br/>Must contains a minimum of 6 and maximum of 32 characters."
                 },
                 "confirm_password": {
                     "label": "Confrm Password",
