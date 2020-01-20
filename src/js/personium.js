@@ -146,13 +146,19 @@ configureJQueryValidation = function() {
 
 createExtraRules = function() {
     $.validator.addMethod("cellName", function(value, element) {
-        return this.optional(element) || /^[a-zA-Z0-9][a-zA-Z0-9-_]{0,127}$/.test(value);
+        // personium-core\src\main\java\io\personium\core\model\ctl\Common.java
+        // REGEX_CELL_NAME
+        return this.optional(element) || /^[a-z0-9][a-z0-9-]{0,127}$/.test(value);
     }, i18next.t("wizard_pane.cell_info.cell_name.spec"));
     $.validator.addMethod("adminName", function(value, element) {
+        // personium-core\src\main\java\io\personium\core\model\ctl\Common.java
+        // REGEX_NAME
         return this.optional(element) || /^[a-zA-Z0-9][a-zA-Z0-9-_!$*=^`{|}~.@]{0,127}$/.test(value);
     }, i18next.t("wizard_pane.account.admin.name.spec"));
     $.validator.addMethod("adminPassword", function(value, element) {
-        return this.optional(element) || /^[a-zA-Z0-9-_]{0,}$/.test(value);
+        // personium-core\src\main\resources\personium-unit-config-default.properties
+        // io.personium.core.security.auth.password.regex
+        return this.optional(element) || /^[a-zA-Z0-9-_!$*=^`{|}~.@]{6,32}$/.test(value);
     }, i18next.t("wizard_pane.account.admin.password.spec"));
 };
 
